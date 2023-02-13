@@ -22,4 +22,6 @@ Topic
     --protocol=email \
     --notification-endpoint=#########@gmail.com
     
-
+**I SETTUP ALARM WITH THE ALARM JSON SCRIPT IN aws_json FOLDER**
+alarm_config.json
+    aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm_config.json
