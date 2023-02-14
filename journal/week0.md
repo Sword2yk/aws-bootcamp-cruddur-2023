@@ -5,6 +5,7 @@
 <!-- Headings -->
 ## INSTALLED AWS CLI TO WORKSPACE ON GITPOD
 <br>
+
 I updated the ``` .gitpod.yml``` file for automatic installation of AWS CLI on my GITPOD.IO workspace, after installing AWS CLI from the awscliv2.zip file. <br>
 
     gitpod /workspace $ ls -la
