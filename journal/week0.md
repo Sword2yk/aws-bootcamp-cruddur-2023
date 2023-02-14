@@ -27,21 +27,28 @@ I used the script in budget.json file to configure the budget for my root AWS ac
 <br>
 
 <!-- Headings -->
-## I CREATED SNS TOPIC ON MY AWS Account
+## I CREATED SNS TOPIC ON MY AWS Account FOR BILLING ALARM
 
-    ```
+    
     {
         TopicArn": "arn:aws:sns:us-east-1:289043571302:billing-alarm" \
     }
-    ```
+    
 
 <!-- Headings -->
-## I ADDED SNS SUBSCRIBE
+## I ADDED SNS SUBSCRIBE TO THE BILLING ALARM FOR AN EMAIL ENDPOINT
+<br>
+
     --topic-arn="arn:aws:sns:us-east-1:289043571302:billing-alarm" \
     --protocol=email \
     --notification-endpoint=boi2yk@gmail.com
 
 <!-- Headings -->
-## I SETTUP ALARM 
-alarm_config.json
-    aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm_config.json
+## I SETTUP ALARM FOR DAILY ESTIMATION. 
+Trigers if  daily charges exceeds 1$
+<br>
+
+json script in the aws_json folder ```alarm_config.json```
+    
+    aws cloudwatch put-metric-alarm --cli-input-json file://aws_json/alarm_config.json
+    
