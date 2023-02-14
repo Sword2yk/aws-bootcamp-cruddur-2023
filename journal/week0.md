@@ -76,6 +76,9 @@ Architectural diagrams
 <li>
 
 [Cruddur-Conceptual Diagram](https://lucid.app/lucidchart/9690082c-0385-407c-92d3-0f8666e493ce/edit?viewport_loc=21%2C-899%2C1635%2C782%2C0_0&invitationId=inv_7e0fee76-f62a-4042-8f1f-e00ccd3b4c8f).
+    
+[Cruddur-Conceptual Diagram](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/Cruddur-Conceptual%20Diagram.png)
+ 
 </li>
 <li>
 
