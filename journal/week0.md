@@ -1,27 +1,47 @@
+<!-- Headings -->
 # Week 0 — Billing and Architecture
-**INSTALLED AWS CLI TO WORKSPACE ON GITPOD**
-UPDATED 'gitpod.yml' FILE FOR AUTO INSTALLATION ON AWS CLI ON MY GITPOD.IO WORKSPACE
-**I SET MY AWS CREDENTIALS AND ENV Vars WITH MY AWS ACCESS KEY INFORMATION**
+
+<!-- Headings -->
+## INSTALLED AWS CLI TO WORKSPACE ON GITPOD
+<br>
+I updated the ``` .gitpod.yml``` file for automatic installation of AWS CLI on my GITPOD.IO workspace, after installing AWS CLI from the awscliv2.zip file. <br>
+<br>
+
+## I SETUP MY AWS CREDENTIALS AND ENV Vars WITH MY AWS ACCESS KEY INFORMATION
+
+Using ```aws sts get-caller-identity``` to print out my userId
+```
 {
-    "UserId": "###########",
-    "Account": "********",
-    "Arn": "arn:aws:iam::*******:user/uche"
+    "UserId": "AIDAUGTCW4JTHF5AGEMT7",
+    "Account": "289043571302",
+    "Arn": "arn:aws:iam::289043571302:user/uche"
 }
 
-**I SETUP AWS BUDGET USING THE JSON FILES IN AWS_JSON FOLDER.**
-budget.json FILE - WHICH CONTAINS JSON SCRIPT TO CONFIGURE THE BUDGET ON MY AWS ROOT ACCOUNT
-budget-notification-with-subscriber.json FILE - JSON SCRIPT THAT CONFIGURE NOTIFICATION WITH EMAIL AS SUBSCRIPTION
+```
 
-**I CREATED SNS TOPIC**
-Topic
-{
-    "TopicArn": "arn:aws:sns:us-east-1:**********:billing-alarm"
-}
-**I ADDED SNS SUBSCRIBE**
-    --topic-arn="arn:aws:sns:us-east-1:*********:billing-alarm" \
+<!-- Headings -->
+## I SETUP AWS BUDGET WITH SUBSCRIBER NOTIFICATION USING THE JSON FILES IN AWS_JSON FOLDER.
+I used the script in budget.json file to configure the budget for my root AWS account.<br>
+```budget.json``` in the aws_json folder.<br>
+```budget-notification-with-subscriber.json``` for  budget notification with an email subscriber.
+<br>
+
+<!-- Headings -->
+## I CREATED SNS TOPIC ON MY AWS Account
+
+    ```
+    {
+        TopicArn": "arn:aws:sns:us-east-1:289043571302:billing-alarm" \
+    }
+    ```
+
+<!-- Headings -->
+## I ADDED SNS SUBSCRIBE
+    --topic-arn="arn:aws:sns:us-east-1:289043571302:billing-alarm" \
     --protocol=email \
-    --notification-endpoint=#########@gmail.com
-    
-**I SETTUP ALARM WITH THE ALARM JSON SCRIPT IN aws_json FOLDER**
+    --notification-endpoint=boi2yk@gmail.com
+
+<!-- Headings -->
+## I SETTUP ALARM 
 alarm_config.json
     aws cloudwatch put-metric-alarm --cli-input-json file://aws/json/alarm_config.json
