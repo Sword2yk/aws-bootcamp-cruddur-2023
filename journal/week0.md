@@ -81,8 +81,7 @@ Architectural diagrams
 
 [Cruddur Logical Diagram](https://lucid.app/lucidchart/393f7bd9-1f87-4954-9d30-bd21f53bd38f/edit?viewport_loc=380%2C511%2C1635%2C782%2C0_0&invitationId=inv_6d2bb1e0-909c-4ee7-a4f7-7f3927b995b8).
 
-
-
+![Cruddur Logical Diagram](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/Cruddur%20Logical%20Diagram.png)
 
 </li>
 </ul>
