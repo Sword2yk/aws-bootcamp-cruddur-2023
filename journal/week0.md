@@ -40,6 +40,9 @@ I used the script in budget.json file to configure the budget for my root AWS ac
 ```budget-notification-with-subscriber.json``` for  budget notification with an email subscriber.
 <br>
 
+![BUDGET](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/aws_budget.png)
+
+
 <!-- Headings -->
 ## I CREATED SNS TOPIC ON MY AWS Account FOR BILLING ALARM
 
@@ -48,6 +51,7 @@ I used the script in budget.json file to configure the budget for my root AWS ac
         TopicArn": "arn:aws:sns:us-east-1:289043571302:billing-alarm" \
     }
     
+![BILLING Alarm](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/billing_alarm_with_sub.png)
 
 <!-- Headings -->
 ## I ADDED SNS SUBSCRIBE TO THE BILLING ALARM FOR AN EMAIL ENDPOINT
@@ -56,6 +60,8 @@ I used the script in budget.json file to configure the budget for my root AWS ac
     --topic-arn="arn:aws:sns:us-east-1:289043571302:billing-alarm" \
     --protocol=email \
     --notification-endpoint=boi2yk@gmail.com
+
+![SNS](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/amazon_sns.png)
 
 <!-- Headings -->
 ## I SETTUP ALARM FOR DAILY ESTIMATION. 
@@ -66,7 +72,7 @@ json script in the aws_json folder ```alarm_config.json```
     
     aws cloudwatch put-metric-alarm --cli-input-json file://aws_json/alarm_config.json
 
-
+![ALARM](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/aws_alarm.png)
 
 <!-- Headings -->
 # Architecture
