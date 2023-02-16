@@ -36,7 +36,7 @@ Using ```aws sts get-caller-identity``` to print out my userId
 
 <!-- Headings -->
 ## I SETUP AWS BUDGET WITH SUBSCRIBER NOTIFICATION USING THE JSON FILES IN AWS_JSON FOLDER.
-I used the script in budget.json file to configure the budget for my root AWS account.<br>
+I used the script in budget.json file to create the budget.<br>
 ```budget.json``` in the aws_json folder.<br>
 ```budget-notification-with-subscriber.json``` for  budget notification with an email subscriber.
 <br>
