@@ -52,7 +52,7 @@ I used the script in budget.json file to create the budget.<br>
         TopicArn": "arn:aws:sns:us-east-1:289043571302:billing-alarm" \
     }
     
-![BILLING Alarm](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/billing_alarm_with_sub.png)
+![BILLING Alarm](week_0_assets/billing_alarm_with_sub.png)
 
 <!-- Headings -->
 ## I ADDED SNS SUBSCRIBE TO THE BILLING ALARM FOR AN EMAIL ENDPOINT
@@ -95,3 +95,13 @@ Architectural diagrams
 
 </li>
 </ul>
+
+## Referencing
+Referencing my json repos files.
+<ol>
+    <li>
+        [Week 0 Budget configuration](budget.json)
+    </li>
+    <li>
+        [Week 0 Alarm_config](aws_json/alarm_config.json)
+    </li>
