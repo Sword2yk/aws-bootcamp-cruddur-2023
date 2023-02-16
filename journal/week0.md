@@ -60,7 +60,7 @@ I used the script in budget.json file to configure the budget for my root AWS ac
 
     --topic-arn="arn:aws:sns:us-east-1:289043571302:billing-alarm" \
     --protocol=email \
-    --notification-endpoint=boi2yk@gmail.com
+    --notification-endpoint=obichinedu@gmail.com
 
 ![SNS](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/amazon_sns.png)
 
@@ -84,14 +84,14 @@ Architectural diagrams
 
 [Cruddur-Conceptual Diagram](https://lucid.app/lucidchart/9690082c-0385-407c-92d3-0f8666e493ce/edit?viewport_loc=21%2C-899%2C1635%2C782%2C0_0&invitationId=inv_7e0fee76-f62a-4042-8f1f-e00ccd3b4c8f).
     
-![Cruddur-Conceptual Diagram](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/Cruddur-Conceptual%20Diagram.png)
+![Cruddur-Conceptual Diagram](week_0_assets/Cruddur-Conceptual%20Diagram.png)
  
 </li>
 <li>
 
 [Cruddur Logical Diagram](https://lucid.app/lucidchart/393f7bd9-1f87-4954-9d30-bd21f53bd38f/edit?viewport_loc=380%2C511%2C1635%2C782%2C0_0&invitationId=inv_6d2bb1e0-909c-4ee7-a4f7-7f3927b995b8).
 
-![Cruddur Logical Diagram](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/Cruddur%20Logical%20Diagram.png)
+![Cruddur Logical Diagram](week_0_assets/Cruddur%20Logical%20Diagram.png)
 
 </li>
 </ul>
