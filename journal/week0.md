@@ -100,8 +100,12 @@ Architectural diagrams
 Referencing my json repos files.
 <ol>
     <li>
+        
         [Week 0 Budget configuration](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/tree/main/aws_json)
+    
     </li>
     <li>
+        
         [Week 0 Alarm_config](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/alarm_config.json)
+    
     </li>
