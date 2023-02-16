@@ -97,7 +97,7 @@ Architectural diagrams
 </ul>
 
 ## Referencing
-Referencing my json repos files.
+Referencing my json repos.
 <ol>
 <li>
         
