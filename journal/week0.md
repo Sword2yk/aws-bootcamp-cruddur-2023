@@ -41,7 +41,7 @@ I used the script in budget.json file to configure the budget for my root AWS ac
 ```budget-notification-with-subscriber.json``` for  budget notification with an email subscriber.
 <br>
 
-![BUDGET](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/aws_budget.png)
+![BUDGET](week_0_assets/aws_budget.png)
 
 
 <!-- Headings -->
@@ -62,7 +62,7 @@ I used the script in budget.json file to configure the budget for my root AWS ac
     --protocol=email \
     --notification-endpoint=obichinedu@gmail.com
 
-![SNS](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/amazon_sns.png)
+![SNS](week_0_assets/amazon_sns.png)
 
 <!-- Headings -->
 ## I SETTUP ALARM FOR DAILY ESTIMATION. 
@@ -73,7 +73,7 @@ json script in the aws_json folder ```alarm_config.json```
     
     aws cloudwatch put-metric-alarm --cli-input-json file://aws_json/alarm_config.json
 
-![ALARM](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/aws_json/aws_alarm.png)
+![ALARM](week_0_assets/aws_alarm.png)
 
 <!-- Headings -->
 # Architecture
