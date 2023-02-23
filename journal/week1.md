@@ -133,3 +133,9 @@ I integrated DynamoDB Local and Postgres by updating the services and volu on th
 
 ### Postgres
 ![Postgres db](week_1_assets/postgres_db.png) <br>
+
+# DockerHub
+
+I created repos on docker hub ``` Sword2yk\aws-bootcamp-cruddur-2023 ```
+
+
