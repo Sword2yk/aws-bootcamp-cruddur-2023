@@ -29,5 +29,107 @@ I used ``` docker container run --rm -p 4567:4567 -d backend-flask ``` to print 
 
 ``` docker image ``` <br>
 
-![Images](week_1_assets/docker_images.png) <br>
+![Docker Images](week_1_assets/docker_images.png) <br>
 
+## Test Server using Curl
+
+I run a test to the server using Curl command <br>
+
+``` curl -X GET http://localhost:4567/api/activities/home -H "Accept: application/json" -H "Content-Type: application/json" ``` <br>
+### Print out
+    
+        [
+          {
+            "created_at": "2023-02-21T14:03:49.568691       +00:00",
+            "expires_at": "2023-02-28T14:03:49.568691       +00:00",
+            "handle": "Chinedu Obi",
+            "likes_count": 5,
+            "message": "cloud is the future!",
+            "replies": [
+              {
+                "created_at": "2023-02-21T14:03:49.568691       +00:00",
+                "handle": "worf",
+                "likes_count": 0,
+                "message": "this post has no honor!",
+                "replies_count": 0,
+                "reply_to_activity_uuid":       "68f126b0-1ceb-4a33-88be-d90fa7109eee",
+                "reposts_count": 0,
+                "uuid":         "26e12864-1c26-5c3a-9658-97a10f8fea67"
+              }
+            ],
+            "replies_count": 1,
+            "reposts_count": 0,
+            "uuid": "68f126b0-1ceb-4a33-88be-d90fa7109eee"
+          },
+          {
+            "created_at": "2023-02-16T14:03:49.568691       +00:00",
+            "expires_at": "2023-03-04T14:03:49.568691       +00:00",
+            "handle": "worf",
+            "likes": 0,
+            "message": "i am out of prune juice",
+            "replies": [],
+            "uuid": "66e12864-8c26-4c3a-9658-95a10f8fea67"
+          },
+          {
+            "created_at": "2023-02-23T13:03:49.568691       +00:00",
+            "expires_at": "2023-02-24T02:03:49.568691       +00:00",
+            "handle": "garek",
+            "likes": 0,
+            "message": "my dear doctor, i am just simple        tailor",
+            "replies": [],
+            "uuid": "248959df-3079-4947-b847-9e0892d1bab4"
+          }
+        ]
+### Docker Logs checks
+
+Docker container ID: 79787ac685b5 <br>
+Using ``` docker logs 79787ac685b5 -f ```  or right click on the container in the Docker extension ---> View logs <br>
+![Docker Logs](week_1_assets/docker_logs.png) <br>
+
+### Debugging
+
+I ran below debugging 
+
+``` docker run --rm -it curlimages/curl "-X GET http://localhost:4567/api/activities/home -H \"Accept: application/json\" -H \"Content-Type: application/json\"" ``` <br>
+
+![Containers Debugging](week_1_assets/docker_debugging.png) <br>
+
+## Frontend Containerization
+
+I created ``` Dockerfile ``` frontend-react-js dir.<br>
+
+    FROM node:16.18
+    ENV PORT=3000
+    COPY . /frontend-react-js
+    WORKDIR /frontend-react-js
+    RUN npm install -g npm@9.5.1
+    EXPOSE ${PORT}
+    CMD ["npm", "start"]
+
+<br>
+Successfully built the container
+
+    Sending build context to Docker daemon          267.7MB
+     .........
+    Successfully built e21787c4790d
+    Successfully tagged 
+    frontend-react-js:latest
+<br>
+### Run the container
+Run the container ``` docker run -p 3000:3000 -d frontend-react-js ``` <br>
+
+## Multiple Containers
+
+Right click on the created ``` docker-compose.yml ``` at the root of my project and clicke on compose up to run multiple containers (frondend and backend). <br>
+
+![Multiple Containers](week_1_assets/Docker_backend_frontend_running.png) <br>
+
+# DynamoDB Local and Postgres
+
+I integrated DynamoDB Local and Postgres by updating the services and volu on the ``` docker-compose.yml ``` file.
+
+### DynamoDB Local
+![DynamoDB Local](week_1_assets/dynamodb_table_record.png) <br>
+
+### Postgres
+![Postgres db](week_1_assets/postgres_db.png) <br>
