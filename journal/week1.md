@@ -136,6 +136,24 @@ I integrated DynamoDB Local and Postgres by updating the services and volu on th
 
 # DockerHub
 
-I created repos on docker hub ``` Sword2yk\aws-bootcamp-cruddur-2023 ```
+I created repos on docker hub ``` Sword2yk\aws-bootcamp-cruddur-2023 ``` and pushed image tags to DockerHub <br>
+
+[My Docker hub Repo](https://hub.docker.com/r/sword2yk/aws-bootcamp-cruddur-2023/tags) <br>
+
+![Image tags uploaded](week_1_assets/uploaded%20images_tags_my_docker_hub.png) <br>
+
+## Multi-stage building for a Dockerfile build
+
+My sample code <br>
+python helloworld file ``` a.py ``` 
+a.py file 
+
+    print(f'Hello Chinedu welcome to docker world')
+    
+Dockerfile <br>
+![Multi-stage](week_1_assets/DockerFile_multi_stage.png) <br>
+
+Multi-Stage Docker images on my local machine <br>
+![Multi-Stage Docker images](week_1_assets/Multi-Stage_Docker_images.png) <br>
 
 
