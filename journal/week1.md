@@ -107,7 +107,7 @@ I created ``` Dockerfile ``` frontend-react-js dir.<br>
     CMD ["npm", "start"]
 
 <br>
-Successfully built the container
+Successfully built the container using ``` docker build -t frontend-react-js ./frontend-react-js ``` <br>
 
     Sending build context to Docker daemon          267.7MB
      .........
