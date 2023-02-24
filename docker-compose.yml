@@ -52,8 +52,6 @@ networks:
   internal-network:
     driver: bridge
     name: cruddur
-# Adding healthcheck to compose file
-
 volumes:
   db:
     driver: local
