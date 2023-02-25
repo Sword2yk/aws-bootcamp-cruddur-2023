@@ -160,3 +160,74 @@ Multi-Stage Docker images on my local machine <br>
 
 [Docker compose file](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/docker-compose.yml)
 
+# Docker on my local machine
+
+I create below Dokerfile locally and saved.
+
+``` Dockerfile ``` <br> 
+
+    FROM ubuntu:18.04
+
+    # Install dependencies
+    RUN apt-get update && \
+     apt-get -y install apache2
+    
+    # Install apache and write hello world message
+    RUN echo 'Hello World!' > /var/www/html/index.html
+    
+    # Configure apache
+    RUN echo '. /etc/apache2/envvars' > /root/run_apache.sh && \
+     echo 'mkdir -p /var/run/apache2' >> /root/run_apache.sh && \
+     echo 'mkdir -p /var/lock/apache2' >> /root/run_apache.sh && \ 
+     echo '/usr/sbin/apache2 -D FOREGROUND' >> /root/run_apache.sh && \ 
+     chmod 755 /root/run_apache.sh
+    
+    EXPOSE 80
+    
+    CMD /root/run_apache.sh
+<br>
+
+### Docker Build
+
+``` docker build -t hello-world . ```
+![Building Docker image locally](week_1_assets/Docker_build.png) <br>
+
+### Docker images
+
+``` docker images --filter reference=hello-world ```
+![Locally built image files](week_1_assets/docker_images_locally.PNG) <br>
+
+### Running the Container locally
+
+``` docker run -t -i -p 80:80 hello-world ``` <br>
+
+![Running the Containers locally](week_1_assets/Docker_running_locally.png)
+
+## Reference
+<ol>
+<li>
+    
+[Creating Container images](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-container-image.html)
+    
+</li>
+    
+<li>
+    
+[PUSH and TAG images to Docker Hub ](http://jsta.github.io/r-docker-tutorial/04-Dockerhub.html)
+    
+</li>
+<li>
+    
+[Multi-Stage](https://docs.docker.com/build/building/multi-stage/)
+
+</li>
+<li>
+    
+[Docker Hub Repo](https://hub.docker.com/r/sword2yk/aws-bootcamp-cruddur-2023)
+    
+</li>
+<li>
+    
+ [Deploying Docker containers on ECS](https://docs.docker.com/cloud/ecs-integration/)
+ 
+ </li>
