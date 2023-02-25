@@ -156,4 +156,7 @@ Dockerfile <br>
 Multi-Stage Docker images on my local machine <br>
 ![Multi-Stage Docker images](week_1_assets/Multi-Stage_Docker_images.png) <br>
 
+## Healthcheck implemented on the V3 Docker compose file
+
+[Docker compose file](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/docker-compose.yml)
 
