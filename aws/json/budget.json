@@ -1,0 +1,31 @@
+{
+    "BudgetLimit": {
+        "Amount": "2.5",
+        "Unit": "USD"
+    },
+    "BudgetName": "AWS-Bootcamp-Budget",
+    "BudgetType": "COST",
+    "CostFilters": {
+        "TagKeyValue": [
+            "user:Key$value1",
+            "user:Key$value2"
+        ]
+    },
+    "CostTypes": {
+        "IncludeCredit": true,
+        "IncludeDiscount": true,
+        "IncludeOtherSubscription": true,
+        "IncludeRecurring": true,
+        "IncludeRefund": true,
+        "IncludeSubscription": true,
+        "IncludeSupport": true,
+        "IncludeTax": true,
+        "IncludeUpfront": true,
+        "UseBlended": false
+    },
+    "TimePeriod": {
+        "Start": 1676218994,
+        "End": 1686586994
+    },
+    "TimeUnit": "MONTHLY"
+  }
