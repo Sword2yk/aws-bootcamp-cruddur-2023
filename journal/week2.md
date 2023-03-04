@@ -70,7 +70,7 @@ Add below Deamon Service to Docker Compose.
     ports:
       - 2000:2000/udp
  
- Update AWS X-RAY Docker compose environment ```docker-compose.yml```.
+Update AWS X-RAY Docker compose environment ```docker-compose.yml```.
  
     AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
     AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
@@ -156,3 +156,5 @@ Add below to the environment variables to backend-flask in docker compose ```doc
 
 ![](week_2_assets/spinning_honeycomb.png)
 
+## Amazon CloudWatch Logs
+Amazon CloudWatch Logs lets you monitor and troubleshoot your systems and applications using your existing system, application and custom log files.
