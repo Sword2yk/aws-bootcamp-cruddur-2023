@@ -70,7 +70,7 @@ Add below Deamon Service to Docker Compose.
     ports:
       - 2000:2000/udp
  
- Update AWS X-RAY Docker compose environment
+ Update AWS X-RAY Docker compose environment ```docker-compose.yml```.
  
     AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
     AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
@@ -117,6 +117,7 @@ Tracing and importing instrumentation packages.
     from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
     from opentelemetry.sdk.trace import TracerProvider
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.sdk.trace.export import ConsoleSpanExporter, SimpleSpanProcessor
 
 Initialize tracing and an exporter that can send data to Honeycomb.
 
@@ -132,11 +133,52 @@ Initialize automatic instrumentation with Flask.
     FlaskInstrumentor().instrument_app(app)
     RequestsInstrumentor().instrument()
 
-Add below to the environment variables to backend-flask in docker compose.
+Add below to the environment variables to backend-flask in docker compose ```docker-compose.yml```
 
     OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
     OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
-    OTEL_SERVICE_NAME: "${HONEYCOMB_SERVICE_NAME}"
+    OTEL_SERVICE_NAME: "backend-flask"
   
-  
- 
+  ### SPIN: Sending traces to honeycomb.io
+
+            "name": "/api/activities/home",
+            "context": {
+                "trace_id": "0x1519da519fa47d493dc03df46b542988",
+                "span_id": "0xbfd4cfa758e44146",
+                "trace_state": "[]"
+            },
+            "kind": "SpanKind.SERVER",
+            "parent_id": null,
+            "start_time": "2023-03-04T14:01:40.599940Z",
+            "end_time": "2023-03-04T14:01:40.601739Z",
+            "status": {
+                "status_code": "UNSET"
+            },
+            "attributes": {
+                "http.method": "GET",
+                "http.server_name": "0.0.0.0",
+                "http.scheme": "http",
+                "net.host.port": 4567,
+                "http.host": "localhost",
+                "http.target": "/api/activities/home",
+                "net.peer.ip": "172.18.0.1",
+                "http.user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+                "net.peer.port": 51796,
+                "http.flavor": "1.1",
+                "http.route": "/api/activities/home",
+                "http.status_code": 200
+            },
+            "events": [],
+            "links": [],
+            "resource": {
+                "attributes": {
+                    "telemetry.sdk.language": "python",
+                    "telemetry.sdk.name": "opentelemetry",
+                    "telemetry.sdk.version": "1.16.0",
+                    "service.name": "backend-flask"
+                },
+                "schema_url": ""
+            }
+        }
+        172.18.0.1 - - [04/Mar/2023 14:01:40] "GET /api/activities/home HTTP/1.1" 200 -
+
