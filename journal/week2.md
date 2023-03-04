@@ -153,32 +153,6 @@ Add below to the environment variables to backend-flask in docker compose ```doc
             "end_time": "2023-03-04T14:01:40.601739Z",
             "status": {
                 "status_code": "UNSET"
-            },
-            "attributes": {
-                "http.method": "GET",
-                "http.server_name": "0.0.0.0",
-                "http.scheme": "http",
-                "net.host.port": 4567,
-                "http.host": "localhost",
-                "http.target": "/api/activities/home",
-                "net.peer.ip": "172.18.0.1",
-                "http.user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-                "net.peer.port": 51796,
-                "http.flavor": "1.1",
-                "http.route": "/api/activities/home",
-                "http.status_code": 200
-            },
-            "events": [],
-            "links": [],
-            "resource": {
-                "attributes": {
-                    "telemetry.sdk.language": "python",
-                    "telemetry.sdk.name": "opentelemetry",
-                    "telemetry.sdk.version": "1.16.0",
-                    "service.name": "backend-flask"
-                },
-                "schema_url": ""
-            }
-        }
-        172.18.0.1 - - [04/Mar/2023 14:01:40] "GET /api/activities/home HTTP/1.1" 200 -
+
+![](week_2_assets/spinning_honeycomb.png)
 
