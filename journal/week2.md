@@ -139,7 +139,7 @@ Add below to the environment variables to backend-flask in docker compose ```doc
     OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
     OTEL_SERVICE_NAME: "backend-flask"
   
-  ### SPIN: Sending traces to honeycomb.io
+  ### SPINNING: Sending traces to honeycomb.io
 
             "name": "/api/activities/home",
             "context": {
