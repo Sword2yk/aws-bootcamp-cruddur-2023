@@ -156,5 +156,19 @@ Add below to the environment variables to backend-flask in docker compose ```doc
 
 ![](week_2_assets/spinning_honeycomb.png)
 
+### Traces on honeycomb
+Traces collected on honeycomb.io via api ENDPOINT and HEADERS.
+
+Honeycomb Traces
+![honeycomb Traces](week_2_assets/honeycomb_traces_2.PNG)
+
+Search span
+![](week_2_assets/honeycomb_traces.PNG)
+
+Queries for Latency.
+Latency
+![Latency](week_2_assets/honeycomb_latency_heatmap.PNG)
+
+
 ## Amazon CloudWatch Logs
 Amazon CloudWatch Logs lets you monitor and troubleshoot your systems and applications using your existing system, application and custom log files.
