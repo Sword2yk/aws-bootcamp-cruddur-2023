@@ -44,9 +44,49 @@ X-ray Traces - Group
 ### AWS XRAY SAMPLING RULE
 
 A sampling rule specifies which requests X-Ray should record for your API. By customizing sampling rules, you can control the amount of data that you record, and modify sampling behavior on the fly without modifying or redeploying your code.<br>
-Run below sampling rule script on AWS CLI to create a sampling rule.
+<br>
+Run below sampling rule script on AWS CLI to create a sampling rule via API.
 
     aws xray create-sampling-rule --cli-input-json file://aws/json/xray.json
 
 AWS X-Ray Traces - Sampling Rule
 ![X-Ray sampling rule](week_2_assets/sampling%20rule.PNG)
+
+### X-Ray daemon on Amazon ECS
+The AWS X-Ray daemon is a software application that listens for traffic on UDP port 2000, gathers raw segment data, and relays it to the AWS X-Ray API.<br>
+
+Create a Docker image that runs the X-Ray daemon, upload it to a Docker image repository, and then deploy my Amazon ECS cluster.
+Steps:
+Add below Deamon Service to Docker Compose.
+
+    xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    environment:
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_REGION: "us-east-1"
+    command:
+      - "xray -o -b xray-daemon:2000"
+    ports:
+      - 2000:2000/udp
+ 
+ Update AWS X-RAY Docker compose environment
+ 
+    AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+    AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+
+X-Ray daemon in the docker compose file.
+![](week_2_assets/Xray-daemon.png)
+
+### AWS X-Ray daemon Docker logs
+Docker logs for AWS X-Ray daemon.<br>
+Sucessfully sending traces to AWS X-Ray via the API.
+
+![Docker logs for AWS X-Ray daemon ](week_2_assets/X-ray_logs.PNG)
+
+### AWS X-Ray segment
+A trace segment records information about the original request, information about the work that your application does locally, and subsegments with information about downstream calls that your application makes to AWS resources, HTTP APIs, and SQL databases.<br>
+
+X-Ray segment for backend-flask app
+![X-Ray segment](week_2_assets/X-ray-Segment%20details.PNG)
+
