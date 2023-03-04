@@ -41,3 +41,12 @@ Service 'backend-flask' <br>
 X-ray Traces - Group
 ![Xray group](week_2_assets/x-ray%20group.PNG)
 
+### AWS XRAY SAMPLING RULE
+
+A sampling rule specifies which requests X-Ray should record for your API. By customizing sampling rules, you can control the amount of data that you record, and modify sampling behavior on the fly without modifying or redeploying your code.<br>
+Run below sampling rule script on AWS CLI to create a sampling rule.
+
+    aws xray create-sampling-rule --cli-input-json file://aws/json/xray.json
+
+AWS X-Ray Traces - Sampling Rule
+![X-Ray sampling rule](week_2_assets/sampling%20rule.PNG)
