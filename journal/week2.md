@@ -90,3 +90,5 @@ A trace segment records information about the original request, information abou
 X-Ray segment for backend-flask app
 ![X-Ray segment](week_2_assets/X-ray-Segment%20details.PNG)
 
+### AWS X-Ray subsegment
+Subsegments provide more granular timing information and details about downstream calls that the application made to fulfill the original request.
