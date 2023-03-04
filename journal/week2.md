@@ -92,3 +92,22 @@ X-Ray segment for backend-flask app
 
 ### AWS X-Ray subsegment
 Subsegments provide more granular timing information and details about downstream calls that the application made to fulfill the original request.
+
+## HoneyComb
+Instrumentation of Flask app with OpenTelemetry for easy observability.
+
+Add below to instrument a Flask app with OpenTelemetry in the ```requirements.txt```.
+
+        opentelemetry-api
+        opentelemetry-sdk
+        opentelemetry-exporter-otlp-proto-http
+        opentelemetry-instrumentation-flask
+        opentelemetry-instrumentation-requests
+
+Run ```pip install -r requirements.txt``` to install the dependencies.
+
+    ....backend-flask\pip install -r requirements.txt
+
+I updated my ```app.py``` file in the backend-flask folder
+
+
