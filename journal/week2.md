@@ -108,6 +108,35 @@ Run ```pip install -r requirements.txt``` to install the dependencies.
 
     ....backend-flask\pip install -r requirements.txt
 
-I updated my ```app.py``` file in the backend-flask folder
+Add below in the ```app.py``` file.
+Tracing and importing instrumentation packages.
 
+    from opentelemetry import trace
+    from opentelemetry.instrumentation.flask import FlaskInstrumentor
+    from opentelemetry.instrumentation.requests import RequestsInstrumentor
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
+Initialize tracing and an exporter that can send data to Honeycomb.
+
+    provider = TracerProvider()
+    processor = BatchSpanProcessor(OTLPSpanExporter())
+    provider.add_span_processor(processor)
+    trace.set_tracer_provider(provider)
+    tracer = trace.get_tracer(__name__)
+
+Initialize automatic instrumentation with Flask.
+
+    app = flask.Flask(__name__)
+    FlaskInstrumentor().instrument_app(app)
+    RequestsInstrumentor().instrument()
+
+Add below to the environment variables to backend-flask in docker compose.
+
+    OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
+    OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
+    OTEL_SERVICE_NAME: "${HONEYCOMB_SERVICE_NAME}"
+  
+  
+ 
