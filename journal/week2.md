@@ -179,14 +179,13 @@ Add cloudwatch python package ```watchtower```to my ```requirements.txt``` file.
 Run ``` pip install -r requirements.txt ``` in the backend-flask directory.
 
 Update ``` app.py ``` file with the code below.
-#Import watchtower packages
-
+    
+    #Import watchtower packages
     import watchtower
     import logging
     from time import strftime
  
-Configuring Logger to Use CloudWatch
-
+    #Logger configuration for CloudWatch
     LOGGER = logging.getLogger(__name__)
     LOGGER.setLevel(logging.DEBUG)
     console_handler = logging.StreamHandler()
