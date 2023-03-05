@@ -92,6 +92,7 @@ X-Ray segment for backend-flask app
 
 ### AWS X-Ray subsegment
 Subsegments provide more granular timing information and details about downstream calls that the application made to fulfill the original request.
+![](week_2_assets/X-ray-Subsegment.png)
 
 ## HoneyComb
 Instrumentation of Flask app with OpenTelemetry for easy observability.
