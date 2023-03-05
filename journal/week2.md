@@ -134,7 +134,7 @@ Initialize automatic instrumentation with Flask.
     FlaskInstrumentor().instrument_app(app)
     RequestsInstrumentor().instrument()
 
-Add below to the environment variables to backend-flask in docker compose ```docker-compose.yml```
+Add below to the environment variables to backend-flask in docker compose ```docker-compose.yml``` file.
 
     OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
     OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
@@ -173,3 +173,127 @@ Latency
 
 ## Amazon CloudWatch Logs
 Amazon CloudWatch Logs lets you monitor and troubleshoot your systems and applications using your existing system, application and custom log files.
+
+Add cloudwatch python package ```watchtower```to my ```requirements.txt``` file.
+
+Run ``` pip install -r requirements.txt ``` in the backend-flask directory.
+
+Update ``` app.py ``` file with the code below.
+#Import watchtower packages
+
+    import watchtower
+    import logging
+    from time import strftime
+ 
+Configuring Logger to Use CloudWatch
+
+    LOGGER = logging.getLogger(__name__)
+    LOGGER.setLevel(logging.DEBUG)
+    console_handler = logging.StreamHandler()
+    cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
+    LOGGER.addHandler(console_handler)
+    LOGGER.addHandler(cw_handler)
+    LOGGER.info("test log")
+  
+     @app.after_request
+       def after_request(response):
+       timestamp = strftime('[%Y-%b-%d %H:%M]')
+       LOGGER.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+       return response
+
+Add below envirnoment variables to the ```docker-compose.yml``` file.
+
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+     
+### AWS CloudWatch Log
+
+CloudWatch Log via API Call.
+![CloudWatch Log](week_2_assets/CloudWatch_Log_events.PNG)
+
+CloudWatch Streams.
+![Streams](week_2_assets/Cruddur_Log_details.PNG)
+  
+## Rollbar
+Rollbar is a hosted monitoring service that can be used with Python web applications to catch and report errors.<br>
+Add below python packages to ```requirements.txt```
+
+    blinker
+    rollbar
+install rollbar python packages with Run ``` pip install -r requirements.txt ``` in the backend-flask directory.
+
+Add below to the python file ```app.py``` in the backend-flask directory.
+#Import rollbar python packages
+
+    import rollbar
+    import rollbar.contrib.flask
+    from flask import got_request_exception
+    
+     rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+    @app.before_first_request
+    def init_rollbar():
+        """init rollbar module"""
+        rollbar.init(
+            # access token
+            rollbar_access_token,
+            # environment name
+            'production',
+            # server root directory, makes tracebacks prettier
+            root=os.path.dirname(os.path.realpath(__file__)),
+            # flask already sets up logging
+            allow_logging_basic_config=False)
+
+    # send exceptions from `app` to rollbar, using flask's signal system.
+    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
+    
+Add below rollbar access token variable to the ```docker-compose.yml``` file.
+
+    ROLLBAR_ACCESS_TOKEN: "${ROLLBAR_ACCESS_TOKEN}"
+
+### Set the access token for rollbar
+ 
+    export ROLLBAR_ACCESS_TOKEN=""
+    gp env ROLLBAR_ACCESS_TOKEN=""
+
+Add endpoint for testing on ```app.py``` in the backend-flask directory.
+
+    # Rollbar ----
+    @app.route('/rollbar/test')
+    def rollbar_test():
+        rollbar.report_message('Hello World!', 'warning')
+        return "Hello World!"
+ 
+ ### Rollbar testing
+ Rollbar test page.
+ ![Test Page](week_2_assets/Rollbar_test_page.PNG)
+ 
+ Rollbar monitoring host
+ ![monitoring](week_2_assets/Rollbar_hello_test.PNG)
+ 
+## Reference
+<ol>
+<li>
+     
+[AWS-xray-daemon Github](https://github.com/aws/aws-xray-daemon)
+    
+</li>
+
+<li>
+        
+[AWS-xray-daemon with ECS](https://docs.aws.amazon.com/xray/latest/devguide/xray-daemon-ecs.html)
+    
+</li>
+
+ <li>
+        
+ [HoneyComb](https://docs.honeycomb.io/getting-data-in/opentelemetry/python/)
+        
+ </li>
+ 
+ <li>
+          
+ [Rollbar](https://docs.rollbar.com/docs)
+          
+ </li>
+ </ol>
