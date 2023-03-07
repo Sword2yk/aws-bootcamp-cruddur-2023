@@ -95,10 +95,10 @@ Subsegments provide more granular timing information and details about downstrea
 ![](week_2_assets/X-ray-Subsegment.png)
 
 ## HoneyComb
-Instrumentation of Flask app with OpenTelemetry for easy observability.
-Created a trial account at honeycomb.io
-Created a new enviroment and attained the api key
-Persisted the API key to ```docker-compose.yml``` file.
+Instrumentation of Flask app with OpenTelemetry for easy observability.<br>
+Created a trial account at honeycomb.io<br>
+Created a new enviroment and attained the api key.<br>
+Persisted the API key to ```docker-compose.yml``` file.<br>
 
     $ gp env HONEYCOMB_API_KEY="<API Key>"
     HONEYCOMB_API_KEY="<API Key>"
