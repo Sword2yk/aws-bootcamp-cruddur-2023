@@ -96,7 +96,13 @@ Subsegments provide more granular timing information and details about downstrea
 
 ## HoneyComb
 Instrumentation of Flask app with OpenTelemetry for easy observability.
+Created a trial account at honeycomb.io
+Created a new enviroment and attained the api key
+Persisted the API key to ```docker-compose.yml``` file.
 
+    $ gp env HONEYCOMB_API_KEY="<API Key>"
+    HONEYCOMB_API_KEY="<API Key>"
+    
 Add below to instrument a Flask app with OpenTelemetry in the ```requirements.txt```.
 
         opentelemetry-api
