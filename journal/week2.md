@@ -1,4 +1,4 @@
-# Week 2 — Homework Challenge (Observability)
+# Week 2 — Observability
 # Distributed Tracing
 Distributed tracing gives you insight into how a particular service is performing as part of the whole in a distributed software system (microservices system).<br>
 
