@@ -31,6 +31,7 @@ import watchtower
 import logging
 from time import strftime
 
+from lib.cognito_jwt_token import TokenVerifyError, CognitoJwtToken
 
 # ROLLBAR ----
 import rollbar
@@ -53,8 +54,8 @@ processor = BatchSpanProcessor(OTLPSpanExporter())
 provider.add_span_processor(processor)
 
 # X-RAY ----------
-xray_url = os.getenv("AWS_XRAY_URL")
-xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+#xray_url = os.getenv("AWS_XRAY_URL")
+#xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
 
 # Show this in the logs within the backend-flask app (STDOUT)
 #simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
@@ -64,6 +65,14 @@ trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
 
 app = Flask(__name__)
+
+#JWT Token
+cognito_jwt_token = CognitoJwtToken(
+                          user_pool_id = os.getenv("AWS_COGNITO_USER_POOLS_ID"), 
+                          user_pool_client_id = os.getenv("AWS_COGNITO_CLIENT_ID"), 
+                          region = os.getenv("AWS_DEFAULT_REGION")
+                          )
+
 
 # Rollbar ----
 @app.route('/rollbar/test')
@@ -89,7 +98,7 @@ def init_rollbar():
     # send exceptions from `app` to rollbar, using flask's signal system.
     got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 # X-RAY ----------
-XRayMiddleware(app, xray_recorder)
+#XRayMiddleware(app, xray_recorder)
 
 # HoneyComb ---------
 # Initialize automatic instrumentation with Flask
@@ -103,8 +112,8 @@ origins = [frontend, backend]
 cors = CORS(
   app, 
   resources={r"/api/*": {"origins": origins}},
-  expose_headers="location,link",
-  allow_headers="content-type,if-modified-since",
+  headers=['Content-Type', 'Authorization'], 
+  expose_headers='Authorization',
   methods="OPTIONS,GET,HEAD,POST"
 )
 
@@ -150,13 +159,31 @@ def data_create_message():
   return
 
 @app.route("/api/activities/home", methods=['GET'])
-@xray_recorder.capture('activities_home')
 def data_home():
-  data = HomeActivities.run()
+  access_token = cognito_jwt_token.extract_access_token(request.headers)
+  if access_token == "null": #empty accesstoken
+    data = HomeActivities.run()
+    return data, 200
+
+  try:
+    cognito_jwt_token.verify(access_token)
+    app.logger.debug("Authenicated")
+    app.logger.debug(f"User: {cognito_jwt_token.claims['username']}")
+    data = HomeActivities.run(cognito_user=cognito_jwt_token.claims['username'])
+  except TokenVerifyError as e:
+    app.logger.debug("Authentication Failed")
+    app.logger.debug(e)
+    data = HomeActivities.run()
+
   return data, 200
 
+@app.route("/api/activities/notifications", methods=['GET'])
+def data_notifications():
+  data = NotificationsActivities.run()
+  return data, 200
+
+
 @app.route("/api/activities/@<string:handle>", methods=['GET'])
-@xray_recorder.capture('activities_users')
 def data_handle(handle):
   model = UserActivities.run(handle)
   if model['errors'] is not None:
