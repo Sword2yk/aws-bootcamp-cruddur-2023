@@ -525,25 +525,67 @@ Run ```pip install -r requirements.txt``` for the awscognito jwt package install
  <br>
  Add JWT Token on ``app.py``` file.<br>
     
-    ```py
-        ...
-        #JWT Token
-        cognito_jwt_token = CognitoJwtToken(
-                          user_pool_id = os.getenv("AWS_COGNITO_USER_POOLS_ID"), 
-                          user_pool_client_id = os.getenv("AWS_COGNITO_CLIENT_ID"), 
-                          region = os.getenv("AWS_DEFAULT_REGION")
-                          )
-        ...
+   ```py
+
+       ...
+       #JWT Token
+       cognito_jwt_token = CognitoJwtToken(
+                         user_pool_id = os.getenv("AWS_COGNITO_USER_POOLS_ID"), 
+                         user_pool_client_id = os.getenv("AWS_COGNITO_CLIENT_ID"), 
+                         region = os.getenv("AWS_DEFAULT_REGION")
+                         )
+       ...
+
    ```
 
-## Testing
-### Registering a user using AWS CLI.
-
-    ```yml
-      
-       $ aws cognito-idp sign-up \
+## Creating a new User: Testing.
+  
+Registering a user using AWS CLI.
+  
+  ```json
+  
+    $ aws cognito-idp sign-up \
       --client-id <your-client-id> \
       --username <email-address> \
       --password <PASSWORD> \
       --user-attributes Name="email",Value=<email-address> Name="name",Value=<your-name> Name="preferred_username",Value=<preferred-username>
-    ```
+  
+   ```
+  
+### Unconfirmed user in Cognito:
+  Unconfirmed user
+  ![Unconfirmed user](week_3_assets/Unconfirmed_user.png)
+
+### Received Verification code for the new user:
+  Verification code
+  ![Verification code](week_3_assets/Verification%20code.png)
+
+### Verifying the new user:
+  Verification page
+  ![Verification page](week_3_assets/confirm_email.png)
+  
+  Confirmed user
+  ![Confirmed user](week_3_assets/User_verified.png)
+
+### User Signed in:
+  ![User Signed](week_3_assets/user_signin.png)
+
+## References
+<ul>
+<li>
+  
+  [AWS Cognito Documentation](https://docs.aws.amazon.com/cognito/index.html)</li>
+<li>
+  
+  [Github Notes for Week 3](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/edit/main/journal/week3.md)</li>
+<li>
+  
+  [Amplify Documentation](https://ui.docs.amplify.aws/) </li>
+<li>
+  
+  [Flask-AWSCognito’s documentation](https://flask-awscognito.readthedocs.io/en/latest/index.html) </li>
+<li>
+  
+  [Creating a user pool](https://docs.aws.amazon.com/cognito/latest/developerguide/tutorial-create-user-pool.html) </li>
+  
+</ul>
