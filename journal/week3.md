@@ -183,8 +183,9 @@ On the frontend-react-js folder install ASW Amplify ```npm i aws-amplify --save`
      );
    }
   ```
-  
-!{DesktopNavigation}() ********************
+ 
+  Desktop Navigation
+ ![DesktopNavigation](week_3_assets/DesktopNav.png)
 
 ### Enable signing in with a cognito username, [SigninPage.js](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/frontend-react-js/src/pages/SigninPage.js) file.<br>
 
@@ -534,7 +535,15 @@ Run ```pip install -r requirements.txt``` for the awscognito jwt package install
                           )
         ...
    ```
-  
+
 ## Testing
 ### Registering a user using AWS CLI.
-  
+
+    ```yml
+      
+       $ aws cognito-idp sign-up \
+      --client-id <your-client-id> \
+      --username <email-address> \
+      --password <PASSWORD> \
+      --user-attributes Name="email",Value=<email-address> Name="name",Value=<your-name> Name="preferred_username",Value=<preferred-username>
+    ```
