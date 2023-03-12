@@ -538,6 +538,10 @@ Run ```pip install -r requirements.txt``` for the awscognito jwt package install
 
    ```
 
+  Token Verification.
+
+![Token](week_3_assets/Token.PNG)
+  
 ## Creating a new User: Testing.
   
 Registering a user using AWS CLI.
