@@ -48,6 +48,7 @@ Create a new directory `db` in `the \backend-flask\` directory and add a new fil
         created_at TIMESTAMP default current_timestamp NOT NULL
       );
   ```
+  ![Shema for creating table](week_4_assets/db-shema.PNG)
   
 ## Shell script for PSQL Database Connecting
 
@@ -69,8 +70,10 @@ I created a new file `db-drop` in the `bin` directory.
      
      NO_DB_CONNECTION_URL=$(sed 's/\/cruddur//g' <<<"$CONNECTION_URL")
      psql $NO_DB_CONNECTION_URL -c "drop database cruddur;"
-     
-## Shell script for PSQL Database Connection Session
+ 
+ ![Drop db](week_4_assets/drop_database.PNG)
+ 
+## Shell script for PSQL Database Connection Sessions
 
 `db-session` file in the `bin` directory.
 
@@ -92,6 +95,7 @@ I created a new file `db-drop` in the `bin` directory.
            state \
     from pg_stat_activity;"
  ```
+ ![Sessions](week_4_assets/db-sessions.png)
  
  ## Shell script to load the schema to the PSQL Database
  
@@ -112,6 +116,7 @@ I created a new file `db-drop` in the `bin` directory.
     
     psql $URL cruddur < $schema_path
  ``` 
+ ![Load schema](week_4_assets/schema_load.PNG)
  
  ## Shell script to load the seed data to the PSQL Database
  
