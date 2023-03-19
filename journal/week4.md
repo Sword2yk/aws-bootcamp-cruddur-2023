@@ -3,7 +3,7 @@
 ## PSQL Database Creation
 
 ### Amazon RDS Database (Production DB)
-
+#### AWS RDS Instance Provision
 I created Amazon RDS database for the production environment (cruddur), using awc CLI script below:
 
 ```bash
@@ -194,3 +194,60 @@ I created a new file `db-drop` in the `bin` directory.
     
     ...
  ```
+## Connection to AWS RDS Instance via GITPOD
+
+I used the command `curl ifconfig.me` to print out current IP for my Gitpod workspace.
+
+        GITPOD_IP = $(curl ifconfig.me)
+
+I created the in bound rule for connection to the RDS instance.<br>
+From the Security group rules, I collected the the Security group ID: `sg-02d49491e45f597z6` and Security group rule ID: `sgr-042ed5ae4489f57c0`.<br>
+
+   ```yml
+        export DB_SG_ID="sg-02d49491e45f597z6"
+        gp env DB_SG_ID="sg-02d49491e45f597z6"
+        export DB_SG_RULE_ID="sgr-042ed5ae4489f57c0"
+        gp env DB_SG_RULE_ID="sgr-042ed5ae4489f57c0"
+   ```
+   
+### Shell script to update the AWS RDS Instance Security group
+I created a bash script to update the RDS instance security group, once I start the cruddur workspace on GITPOD.<br>
+`rds-update-sg-rule` file in th `bin` directory.
+    
+    ```bash
+    #! /usr/bin/bash
+
+    CYAN='\033[1;36m'
+    NO_COLOR='\033[0m'
+    LABEL="rds-update-sg-rule"
+    printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
+    
+    aws ec2 modify-security-group-rules \
+        --group-id $DB_SG_ID \
+        --security-group-rules "SecurityGroupRuleId=$DB_SG_RULE_ID,SecurityGroupRule={Description=GITPOD,IpProtocol=tcp,FromPort=5432,ToPort=5432,CidrIpv4=$GITPOD_IP/32}"
+        
+    ```
+    
+### Connection to RND Instance Testing
+I ran below script to connect to the production database (RDS instance)
+
+    ```bash
+            .\bin\db-connect prod
+    ```
+#### RND Instance connection    
+![Production](week_4_assets/Connection_RDS_prod_mode.png)
+
+### Connection to Production database
+Connected the RND instance and list the databases available.
+
+#### Production database
+![Production](week_4_assets/Connection_RDS.png)
+
+### Load Schema to the Production database
+Run below scrip to load the database schema to the database
+`./bin/db-schema-load prod`
+
+![PROD SCHEMA](week_4_assets/schema_load_production.png)
+
+
+
