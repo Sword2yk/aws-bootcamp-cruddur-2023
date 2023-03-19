@@ -2,15 +2,44 @@
 
 ## PSQL Database Creation
 
+### Amazon RDS Database (Production DB)
+
+I created Amazon RDS database for the production environment (cruddur), using awc CLI script below:
+
+```bash
+    aws rds create-db-instance \
+        --db-instance-identifier cruddur-db-instance \
+        --db-instance-class db.t3.micro \
+        --engine postgres \
+        --engine-version  14.6 \
+        --master-username root \
+        --master-user-password ######## \
+        --allocated-storage 20 \
+        --availability-zone us-east-1a \
+        --backup-retention-period 0 \
+        --port 5432 \
+        --no-multi-az \
+        --db-name cruddur \
+        --storage-type gp2 \
+        --publicly-accessible \
+        --storage-encrypted \
+        --enable-performance-insights \
+        --performance-insights-retention-period 7 \
+        --no-deletion-protection
+        
+```
+RDS Database
+![RDS Databases](week_4_assets/RDS_cruddur.png)
+
 ### createdb — create a new PostgreSQL database
 
-I use the createdb command to create our database
+I used the createdb command to create our database.
 
     createdb cruddur -h localhost -U postgres
 
 ![CREATE CRUDDUR](week_4_assets/create_database.PNG)
 
-I use below command to connect to PSQL Client and  list the database(s).
+I used below command to connect to PSQL Client and  list the database(s).
 
     psql -U postgres -h localhost
     
@@ -138,6 +167,7 @@ I created a new file `db-drop` in the `bin` directory.
     psql $URL cruddur < $seed_path
     
  ```
+ ![Inserted data](week_4_assets/db-seed-insert.png)
  
  ## Sell script for easy PSQL Database Setup
  
@@ -151,4 +181,16 @@ I created a new file `db-drop` in the `bin` directory.
     source "$bin_path/db-seed"
  ```
  
+ ## Postgres Client Installation  for Backend
+
+ Add below to the `docker-compose.yml` file
  
+ ```yml
+    ...
+    
+    backend-flask:
+    environment:
+        CONNECTION_URL: "${CONNECTION_URL}"
+    
+    ...
+ ```
