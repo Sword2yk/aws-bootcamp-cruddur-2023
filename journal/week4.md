@@ -229,7 +229,7 @@ I created a bash script to update the RDS instance security group, once I start 
     ```
     
 ### Connection to RND Instance Testing
-I ran below script to connect to the production database (RDS instance)
+I ran below script to connect to the production database (RDS instance).
 
     ```bash
             .\bin\db-connect prod
@@ -244,10 +244,92 @@ Connected the RND instance and list the databases available.
 ![Production](week_4_assets/Connection_RDS.png)
 
 ### Load Schema to the Production database
-Run below scrip to load the database schema to the database
+Run below scrip to load the database schema to the database.
 `./bin/db-schema-load prod`
 
 ![PROD SCHEMA](week_4_assets/schema_load_production.png)
 
+### Update the GITPOD IP on the `gitpod.yml ` file for Auto Security Group update
+
+Add below lines to `gitpod.yml` file for updating GITPOD IP from the `curl ifconfig.me` command that print the current IP.
+
+```bash
+     ...
+     
+      command: |
+      export GITPOD_IP=$(curl ifconfig.me)
+      source "$THEIA_WORKSPACE_ROOT/backend-flask/db-update-sg-rule"
+      
+     ...
+```
+## Cognito Post Confirmation Lambda
+
+I created a new Lambda function on Amazon console called `cruddur-post-confirmation`.
+
+### Lambda function `cruddur-post-confirmation`
+
+Lambda function with Python 3.8 runtime.
+
+![Lambda function](week_4_assets/Lambda_function.png)
+
+### Code Source:
+
+  ```python
+      import json
+      import psycopg2
+      import o
+      
+      def lambda_handler(event, context):
+          user = event['request']['userAttributes']
+          print('userAttributes')
+          print(user)
+      
+          user_display_name  = user['name']
+          user_email         = user['email']
+          user_handle        = user['preferred_username']
+          user_cognito_id    = user['sub']
+          try:
+            print('entered-try')
+            sql = f"""
+               INSERT INTO public.users (
+                display_name, 
+                email,
+                handle, 
+                cognito_user_id
+                ) 
+              VALUES(%s,%s,%s,%s)
+            """
+            print('SQL Statement ----')
+            print(sql)
+            conn = psycopg2.connect(os.getenv('CONNECTION_URL'))
+            cur = conn.cursor()
+            params = [
+              user_display_name,
+              user_email,
+              user_handle,
+              user_cognito_id
+            ]
+            cur.execute(sql,*params)
+            conn.commit() 
+      
+          except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+          finally:
+            if conn is not None:
+                cur.close()
+                conn.close()
+                print('Database connection closed.')
+          return event
+  
+  ```
+
+### Add Layers
+
+Add psycopg2 layer to the lambda `cruddur-post-confirmation`.
+
+![Layers](week_4_assets/Lambda_layer.png)
+
+Layers
+![](week_4_assets/psycopg2_layer.png)
 
 
