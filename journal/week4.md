@@ -339,3 +339,13 @@ Layers
 Amazon Cognito `cruddur-user-pool` add the Lambda triggers and attached Lambda function `cruddur-post-confirmation`.
 
 ![Lambda triggers](week_4_assets/Lambda_triggers.png)
+
+### Add Lambda Environment variables.
+
+Add below aws RND instance for production db to the lambda function `cruddur-post-confirmation`.
+
+    postgresql://root:password@cruddur-db-instance.c2fknpkdgfhd.us-east-1.rds.amazonaws.com:5432/cruddur
+    
+Lambda Environment variable
+![Environment variables](week_4_assets/Lambda_env_var.png)
+
