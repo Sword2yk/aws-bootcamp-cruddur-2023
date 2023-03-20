@@ -274,6 +274,8 @@ Lambda function with Python 3.8 runtime.
 
 ### Code Source:
 
+Add below python script to the lambda function `cruddur-post-confirmation` and create a new python file in `aws\lambda` directory `lambda.py`.
+
   ```python
       import json
       import psycopg2
@@ -330,6 +332,10 @@ Add psycopg2 layer to the lambda `cruddur-post-confirmation`.
 ![Layers](week_4_assets/Lambda_layer.png)
 
 Layers
-![](week_4_assets/psycopg2_layer.png)
+![Layers](week_4_assets/psycopg2_layer.png)
 
+### Lambda triggers
 
+Amazon Cognito `cruddur-user-pool` add the Lambda triggers and attached Lambda function `cruddur-post-confirmation`.
+
+![Lambda triggers](week_4_assets/Lambda_triggers.png)
