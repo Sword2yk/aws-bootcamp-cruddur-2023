@@ -1,27 +1,16 @@
-HTTP_HEADER = "Authorization"
-
 import time
 import requests
 from jose import jwk, jwt
 from jose.exceptions import JOSEError
 from jose.utils import base64url_decode
-from flask_awscognito.exceptions import FlaskAWSCognitoError, TokenVerifyError
 
 class FlaskAWSCognitoError(Exception):
-    pass
-
+  pass
 
 class TokenVerifyError(Exception):
-    pass
+  pass
 
-def extract_access_token(request_headers):
-    access_token = None
-    auth_header = request_headers.get(HTTP_HEADER)
-    if auth_header and " " in auth_header:
-        _, access_token = auth_header.split()
-    return access_token
-
-class CognitoJWTToken: 
+class CognitoJwtToken:
     def __init__(self, user_pool_id, user_pool_client_id, region, request_client=None):
         self.region = region
         if not self.region:
@@ -35,7 +24,7 @@ class CognitoJWTToken:
             self.request_client = request_client
         self._load_jwk_keys()
 
-    
+
     def _load_jwk_keys(self):
         keys_url = f"https://cognito-idp.{self.region}.amazonaws.com/{self.user_pool_id}/.well-known/jwks.json"
         try:
@@ -100,6 +89,13 @@ class CognitoJWTToken:
         audience = claims["aud"] if "aud" in claims else claims["client_id"]
         if audience != self.user_pool_client_id:
             raise TokenVerifyError("Token was not issued for this audience")
+    
+    def extract_access_token(self, request_headers):
+        access_token = None
+        auth_header = request_headers.get("Authorization")
+        if auth_header and " " in auth_header:
+            _, access_token = auth_header.split()
+        return access_token
 
     def verify(self, token, current_time=None):
         """ https://github.com/awslabs/aws-support-tools/blob/master/Cognito/decode-verify-jwt/decode-verify-jwt.py """
@@ -115,4 +111,3 @@ class CognitoJWTToken:
         self._check_audience(claims)
 
         self.claims = claims
-        return claims
