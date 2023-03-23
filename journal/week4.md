@@ -344,8 +344,188 @@ Amazon Cognito `cruddur-user-pool` add the Lambda triggers and attached Lambda f
 
 Add below aws RND instance for production db to the lambda function `cruddur-post-confirmation`.
 
-    postgresql://root:password@cruddur-db-instance.c2fknpkdgfhd.us-east-1.rds.amazonaws.com:5432/cruddur
+    postgresql://root:password@cruddur-db-instance.c2fknpkdgfhd.us-weast-1.rds.amazonaws.com:5432/cruddur
     
 Lambda Environment variable
 ![Environment variables](week_4_assets/Lambda_env_var.png)
+
+### CloudWatch Log group
+Lambda function `cruddur-post-confirmation` cloudWatch log group for alarm triggers.
+CloudWatch Log group
+![CloudWatch](week_4_assets/Cloudwatch_logs.png)
+
+### User Succssfully inserted into the RDS database
+
+Log event.
+![Log event](week_4_assets/Log_events.png)
+
+Congito.
+New User
+![New User](week_4_assets/Cognito_user.png)
+
+Crudder RDS Production database
+![Crudder](week_4_assets/RDS_Cruddur_table_aws.png)
+
+## Creation and inserting users activities in the database
+
+Create a new sql files `create.sql`, `home.sql` and `object.sql` in `backend-flask/db/sql/activities/` path
+`backend-flask/db/sql/activities/create.sql` file.
+
+```sql
+    INSERT INTO public.activities (
+    user_uuid,
+    message,
+    expires_at
+    )
+    VALUES (
+      (SELECT uuid 
+        FROM public.users 
+        WHERE users.handle = %(handle)s
+        LIMIT 1
+      ),
+      %(message)s,
+      %(expires_at)s
+    ) RETURNING uuid;
+    
+```
+
+`backend-flask/db/sql/activities/home.sql` file.
+
+```sql
+    SELECT
+      activities.uuid,
+      users.display_name,
+      users.handle,
+      activities.message,
+      activities.replies_count,
+      activities.reposts_count,
+      activities.likes_count,
+      activities.reply_to_activity_uuid,
+      activities.expires_at,
+      activities.created_at
+    FROM public.activities
+    LEFT JOIN public.users ON users.uuid = activities.user_uuid
+    ORDER BY activities.created_at DESC
+
+```
+`backend-flask/db/sql/activities/object.sql` file.
+
+```sql
+
+    SELECT
+      activities.uuid,
+      users.display_name,
+      users.handle,
+      activities.message,
+      activities.created_at,
+      activities.expires_at
+    FROM public.activities
+    INNER JOIN public.users ON users.uuid = activities.user_uuid 
+    WHERE 
+      activities.uuid = %(uuid)s
+
+```
+
+Modifiy the python files: `create_activities.py`, `lib/db.py`, `home_activities.py` and `app.py`.
+
+`create_activities.py` [Create activities](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/backend-flask/services/create_activity.py).
+    
+`lib/db.py` [db](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/backend-flask/lib/db.py).
+
+`home_activities.py`
+
+```python
+
+    from datetime import datetime, timedelta, timezone
+    from opentelemetry import trace
+    
+    from lib.db import db
+    
+    #tracer = trace.get_tracer("home.activities")
+    
+    class HomeActivities:
+      def run(cognito_user_id=None):
+        sql = db.template('activities','home')
+        results = db.query_array_json(sql)
+        return results
+
+```
+
+`app.py`
+
+```python
+    ...
+    @app.route("/api/activities", methods=["POST", "OPTIONS"])
+        @cross_origin()
+    def data_activities():
+        user_handle = request.json["user_handle"]
+        message = request.json["message"]
+        ttl = request.json["ttl"]
+        model = CreateActivity.run(message, user_handle, ttl)
+        if model["errors"] is not None:
+            return model["errors"], 422
+        else:
+            return model["data"], 200
+        return
+```
+
+On the frontend endside, modify `pages/HomeFeedPage.js` and `ActivityForm.js` to pass the user handle.
+
+`pages/HomeFeedPage.js`
+
+```js
+    <ActivityForm
+      user_handle={user}
+      popped={popped}
+      setPopped={setPopped}
+      setActivities={setActivities}
+    />
+```
+
+`components/ActivityForm.js`
+
+```js
+    body: JSON.stringify({
+      user_handle: props.user_handle.handle,
+      message: message,
+      ttl: ttl
+    }),
+
+```
+
+## Testing inserting activities into the RDS Production Database.
+
+Activities loading from crudder db on the home page after a user login.
+
+![Activities](week_4_assets/home_activities.png)
+
+Crudder Activities table.
+
+![Crudder](week_4_assets/curdder_prod_activities.png)
+
+## Reference
+
+<ol>
+	
+<li>
+     
+[Psycopg2 Lambda Layer](https://github.com/jetbridge/psycopg2-lambda-layer) </li>
+
+<li>
+
+[Discord Solution](https://discord.com/channels/1055552619441049660/1086233246691495968)</li>
+
+<li>
+
+[Lambda Function](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)</li>
+
+<li>
+
+[Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)</li>
+
+<li>
+
+[Psycopy](https://www.psycopg.org/)</li>
+
+</ol>
 
