@@ -531,5 +531,9 @@ Crudder Activities table.
 
 [Postgresql](https://www.postgresql.org/docs/current/app-psql.html)</li>
 
+<li>
+
+[VPC Security Groups](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)</li>
+
 </ol>
 
