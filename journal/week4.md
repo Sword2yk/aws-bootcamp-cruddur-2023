@@ -228,17 +228,17 @@ I created a bash script to update the RDS instance security group, once I start 
         
     ```
     
-### Connection to RND Instance Testing
+### Connection to RDS Instance Testing
 I ran below script to connect to the production database (RDS instance).
 
     ```bash
             .\bin\db-connect prod
     ```
-#### RND Instance connection    
+#### RDS Instance connection    
 ![Production](week_4_assets/Connection_RDS_prod_mode.png)
 
 ### Connection to Production database
-Connected the RND instance and list the databases available.
+Connected the RDS instance and list the databases available.
 
 #### Production database
 ![Production](week_4_assets/Connection_RDS.png)
@@ -340,9 +340,39 @@ Amazon Cognito `cruddur-user-pool` add the Lambda triggers and attached Lambda f
 
 ![Lambda triggers](week_4_assets/Lambda_triggers.png)
 
+### VPC Security Groups
+
+Setup a VPC and Security to able secure connection to the crudder production RDS database.
+
+![VPC](week_4_assets/VPC.png)
+
+### AWS Policy to allow Lambda function to create Ethernet Network Interface.
+
+`AWSLambdaVPCAccessExecutionRole`
+
+```json
+	{
+	    "Version": "2012-10-17",
+	    "Statement": [
+	        {
+	            "Effect": "Allow",
+	            "Action": [
+	                "ec2:CreateNetworkInterface",
+	                "ec2:DeleteNetworkInterface",
+	                "ec2:DescribeNetworkInterfaces"
+	            ],
+	            "Resource": "*"
+	        }
+	    ]
+	}
+	
+```
+Policy Attached
+![Policy](week_4_assets/Policy_attache.png)
+
 ### Add Lambda Environment variables.
 
-Add below aws RND instance for production db to the lambda function `cruddur-post-confirmation`.
+Add below aws RDS instance for production db to the lambda function `cruddur-post-confirmation`.
 
     postgresql://root:password@cruddur-db-instance.c2fknpkdgfhd.us-weast-1.rds.amazonaws.com:5432/cruddur
     
