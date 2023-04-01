@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta, timezone
+
 from lib.ddb import Ddb
 from lib.db import db
 
-class Messages:
-  def run(message_group_uuid,cognito_user_id):
+class MessageGroups:
+  def run(cognito_user_id):
     model = {
       'errors': None,
       'data': None
@@ -17,9 +18,8 @@ class Messages:
     print(f"UUID: {my_user_uuid}")
 
     ddb = Ddb.client()
-    data = Ddb.list_messages(ddb, message_group_uuid)
-    print("list_messages")
-    print(data)
+    data = Ddb.list_message_groups(ddb, my_user_uuid)
+    print("list_message_groups:",data)
 
     model['data'] = data
-    return model
+    return 
