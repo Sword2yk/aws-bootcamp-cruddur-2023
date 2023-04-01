@@ -18,6 +18,8 @@ from services.show_activity import *
 
 from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
 
+#from lib.cognito_jwt_token import TokenVerifyError, CognitoJwtToken, extract_access_token
+
 # HoneyComb ---------
 from opentelemetry import trace
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
