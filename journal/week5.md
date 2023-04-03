@@ -1,15 +1,113 @@
 # Week 5 — DynamoDB and Serverless Caching
 # Required Homework
 
-## Amazon DynamoDB
+## NOSQL
 
+NoSQL, also referred to as “not only SQL”, “non-SQL”, is an approach to database design that enables the storage and querying of data outside the traditional structures found in relational databases.<br>
+NoSQL databases use a variety of data models for accessing and managing data. These types of databases are optimized specifically for applications that require large data volume, low latency, and flexible data models, which are achieved by relaxing some of the data consistency restrictions of other databases.<br>
+
+## Amazon DynamoDB
 Amazon DynamoDB is a fully managed, serverless, key-value NoSQL database designed to run high-performance applications at any scale. DynamoDB offers built-in security, continuous backups, automated multi-Region replication, in-memory caching, and data import and export tools.<br>
+
+### High availability and durability
+
+DynamoDB automatically spreads the data and traffic for your tables over a sufficient number of servers to handle your throughput and storage requirements, while maintaining consistent and fast performance. All of your data is stored on solid-state disks (SSDs) and is automatically replicated across multiple Availability Zones in an AWS Region, providing built-in high availability and data durability.
 
 ## DynamoDB data model
 
 A DynamoDB table design corresponds to the relational order entry schema that is shown in Relational modeling. It follows the Adjacency list design pattern, which is a common way to represent relational data structures in DynamoDB.<br>
 
+### Modelling
+
+DynamoDB Single-Table Design Process is iterative and consists of the following steps: <br>
+
+<ul>
+  <li>Determine the application entities and relationships.</li>
+  <li>Determine all the access patterns.</li>
+  <li>Determine the key structure and entity key values.</li>
+  <li>Codify the design as a OneTable schema.</li>
+  <li>Create OneTable migration scripts to populate the table with test data.</li>
+  <li>Prototype queries to satisfy each of the access patterns.</li>
+  <li>Repeat and refine.</li>
+</ul>
+
+For Cruddur app, the interactive data is divided into four different patterns.
+<ol>
+  <li>Pattern A: Display Messages in Message Group</li>
+  <li>Pattern B: Display Group Messages</li>
+  <li>Pattern C: Message for an existing Message Group</li>
+  <li>Pattern D: Message for a new Message Group</li>
+</ol>
+
+## Backend Utility Setup
+<ul>
+  <li>Amazon Relational Database Service (RDS): backend-flask/bin/rds.</li>
+  <li>Postgres database: backend-flask/bin/db .</li>
+  <li>DynamoDB: backend-flask/bin/ddb.</li>
+  <li>AWS Cognito: backend-flask/bin/cognoto.</li>
+</ul>
+
+[Commits](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/commit/0c148395b41fc62f1ac082097d0acb9b59476025)
+
+Update `backend-flask/requirements.txt` with `boto3`; AWS SDK for Python (Boto3) to create, configure, and manage AWS services, such as Amazon Elastic Compute Cloud (Amazon EC2) and Amazon Simple Storage Service (Amazon S3).
+<br>
+Add command in `.gitpod.yml` for auto installation of python libraries in the workspace.
+<br>
+
+## Postgres Database Utility Scripts
+
+`backend-flask/bin/db/create` script: Create cruddur app database. `create database cruddur;`
+`backend-flask/bin/db/connect` script: Connect to cruddur. `postgresql://postgres:password@db:5432/cruddur`
+`backend-flask/bin/db/schema-load` script: Create tables `users` and `activities` tables in the cruddur database.
+`backend-flask/bin/db/seed` script: Update and add users in the users table.
+`backend-flask/bin/cognito/list-users` script: To match users in the seed data with the one on cognito.
+`backend-flask/bin/db/setup` script for a quick db setup.
+
+DB Setup and Cognito user list
+![SETUP](week_5_assets/postgres_db.png)
+
+USER LIST
+![USER LIST](week_5_assets/list-users-cognito.png)
 
 
-## DynamoDB Bash Scripts
+## DynamoDB Utility Scripts
 
+### Drop DynamoDB Script.
+`/ddb/drop` script.
+
+Drop table
+![Drop table](week_5_assets/drop_table_dynamo_loacl.png)
+
+### Schema Load Implementation
+Create a schema script `schema-load` to create the dynamoDB table.<br>
+Schema Load
+![Schema Load](week_5_assets/load_dynamon_schema_local.png)
+
+### List Tables Script
+`/ddb/list-tables` script.
+
+List table
+![List table](week_5_assets/list_table_dynamo_local.png)
+
+### Seed Data Implementation
+`/bin/ddb/seed` script.
+
+Seed
+![Seed](week_5_assets/seed_data_dynamo_local.png)
+
+### Scan Data Script
+`/bin/ddb/scan` scripts.
+Scan Data
+![Scan](week_5_assets/scan_seed_data.png)
+
+### Get Conversation Script
+`/bin/ddb/patterns/get-conversation` script.<br>
+
+Get Conversation
+![Get](week_5_assets/get_conversion_local_dynamo.png)
+
+### List Conversation Script
+`/bin/ddb/patterns/list-conversations` script.<br>
+
+List Conversation
+![List](week_5_assets/list_conversion_dynamo_local.png)
