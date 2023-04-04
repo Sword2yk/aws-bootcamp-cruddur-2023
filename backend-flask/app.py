@@ -3,7 +3,6 @@ from flask import request
 from flask_cors import CORS, cross_origin
 import os
 
-from services.users_short import *
 from services.home_activities import *
 from services.user_activities import *
 from services.create_activity import *
@@ -32,7 +31,7 @@ import watchtower
 import logging
 from time import strftime
 
-from lib.cognito_jwt_token import TokenVerifyError, CognitoJwtToken, extract_access_token
+from lib.cognito_jwt_token import CognitoJwtToken, extract_access_token, TokenVerifyError
 
 # ROLLBAR ----
 import rollbar
@@ -69,35 +68,35 @@ app = Flask(__name__)
 
 #JWT Token
 cognito_jwt_token = CognitoJwtToken(
-                          user_pool_id = os.getenv("AWS_COGNITO_USER_POOL_ID"), 
-                          user_pool_client_id = os.getenv("AWS_COGNITO_CLIENT_ID"), 
-                          region = os.getenv("AWS_DEFAULT_REGION")
-                          )
+    user_pool_id = os.getenv("AWS_COGNITO_USER_POOLS_ID"), 
+    user_pool_client_id = os.getenv("AWS_COGNITO_CLIENT_ID"), 
+    region = os.getenv("AWS_DEFAULT_REGION")
+    )
 
 
 # Rollbar ----
-@app.route('/rollbar/test')
-def rollbar_test():
-    rollbar.report_message('Hello World!', 'warning')
-    return "Hello World!"
+#@app.route('/rollbar/test')
+#def rollbar_test():
+#    rollbar.report_message('Hello World!', 'warning')
+#    return "Hello World!"
 
 # ROLLBAR ----
-rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
-@app.before_first_request
-def init_rollbar():
-    """init rollbar module"""
-    rollbar.init(
-        # access token
-        rollbar_access_token,
-        # environment name
-        'production',
-        # server root directory, makes tracebacks prettier
-        root=os.path.dirname(os.path.realpath(__file__)),
-        # flask already sets up logging
-        allow_logging_basic_config=False)
-
-    # send exceptions from `app` to rollbar, using flask's signal system.
-    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
+#rollbar_access_token = os.getenv('ROLLBAR_ACCESS_TOKEN')
+#@app.before_first_request
+#def init_rollbar():
+#    """init rollbar module"""
+#    rollbar.init(
+#        # access token
+#        rollbar_access_token,
+#        # environment name
+#        'production',
+#        # server root directory, makes tracebacks prettier
+#        root=os.path.dirname(os.path.realpath(__file__)),
+#        # flask already sets up logging
+#        allow_logging_basic_config=False)
+#
+#    # send exceptions from `app` to rollbar, using flask's signal system.
+#    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 # X-RAY ----------
 #XRayMiddleware(app, xray_recorder)
 
@@ -139,7 +138,7 @@ def data_message_groups():
     else:
       return model['data'], 200
   except TokenVerifyError as e:
-    # unauthenicatied request
+    # unauthenicated request
     app.logger.debug(e)
     return {}, 401
 
@@ -172,6 +171,7 @@ def data_create_message():
   user_receiver_handle = request.json.get('handle',None)
   message = request.json['message']
   access_token = extract_access_token(request.headers)
+
   try:
     claims = cognito_jwt_token.verify(access_token)
     # authenicatied request
@@ -185,7 +185,7 @@ def data_create_message():
         message=message,
         cognito_user_id=cognito_user_id,
         user_receiver_handle=user_receiver_handle
-      )
+      )  
     else:
       # Push onto existing Message Group
       model = CreateMessage.run(
@@ -205,21 +205,19 @@ def data_create_message():
 
 @app.route("/api/activities/home", methods=['GET'])
 def data_home():
-  access_token = cognito_jwt_token.extract_access_token(request.headers)
-  if access_token == "null": #empty accesstoken
-    data = HomeActivities.run()
-    return data, 200
-
+  access_token = extract_access_token(request.headers)
   try:
-    cognito_jwt_token.verify(access_token)
-    app.logger.debug("Authenicated")
-    app.logger.debug(f"User: {cognito_jwt_token.claims['username']}")
-    data = HomeActivities.run(cognito_user=cognito_jwt_token.claims['username'])
+    claims = cognito_jwt_token.verify(access_token)
+    # authenicatied request
+    app.logger.debug("authenicated")
+    app.logger.debug(claims)
+    app.logger.debug(claims['username'])
+    data = HomeActivities.run(cognito_user_id=claims['username'])
   except TokenVerifyError as e:
-    app.logger.debug("Authentication Failed")
+    # unauthenicatied request
     app.logger.debug(e)
+    app.logger.debug("unauthenicated")
     data = HomeActivities.run()
-
   return data, 200
 
 @app.route("/api/activities/notifications", methods=['GET'])
@@ -246,18 +244,18 @@ def data_search():
     return model['data'], 200
   return
 
-@app.route("/api/activities", methods=["POST", "OPTIONS"])
+@app.route("/api/activities", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_activities():
-    user_handle = request.json["user_handle"]
-    message = request.json["message"]
-    ttl = request.json["ttl"]
-    model = CreateActivity.run(message, user_handle, ttl)
-    if model["errors"] is not None:
-        return model["errors"], 422
-    else:
-        return model["data"], 200
-    return
+  user_handle  = 'andrewbrown'
+  message = request.json['message']
+  ttl = request.json['ttl']
+  model = CreateActivity.run(message, user_handle, ttl)
+  if model['errors'] is not None:
+    return model['errors'], 422
+  else:
+    return model['data'], 200
+  return
 
 @app.route("/api/activities/<string:activity_uuid>", methods=['GET'])
 def data_show_activity(activity_uuid):
@@ -275,11 +273,6 @@ def data_activities_reply(activity_uuid):
   else:
     return model['data'], 200
   return
-
-@app.route("/api/users/@<string:handle>/short", methods=['GET'])
-def data_users_short(handle):
-  data = UsersShort.run(handle)
-  return data, 200
 
 if __name__ == "__main__":
   app.run(debug=True)
