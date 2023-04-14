@@ -3,7 +3,6 @@ import React from "react";
 
 import DesktopNavigation  from '../components/DesktopNavigation';
 import MessageGroupFeed from '../components/MessageGroupFeed';
-
 import checkAuth from '../lib/CheckAuth';
 
 export default function MessageGroupsPage() {
