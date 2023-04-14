@@ -20,7 +20,7 @@ tasks:
   - name: react-js
     command: |
       cd frontend-react-js
-      npm install -g npm@9.6.4
+      npm install
   - name: flask
     command: |
       cd backend-flask
