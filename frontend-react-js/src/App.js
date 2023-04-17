@@ -15,8 +15,8 @@ import {
   createBrowserRouter,
   RouterProvider
 } from "react-router-dom";
-import { Amplify } from 'aws-amplify';
 
+import { Amplify } from 'aws-amplify';
 
 Amplify.configure({
   "AWS_PROJECT_REGION": process.env.REACT_APP_AWS_PROJECT_REGION,
