@@ -22,7 +22,7 @@ The `/journal` directory contains
 - [x] [Week 2 - Distributed Tracing](journal/week2.md)
 - [x] [Week 3 - Decentralized Authentication](journal/week3.md)
 - [x] [Week 4 - Postgres and RDS](journal/week4.md)
-- [ ] [Week 5 - DynamoDB and Serverless Caching](journal/week5.md)
+- [x] [Week 5 - DynamoDB and Serverless Caching](journal/week5.md)
 - [ ] [Week 6](journal/week6.md)
 - [ ] [Week 7](journal/week7.md)
 - [ ] [Week 8](journal/week8.md)
