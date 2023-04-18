@@ -111,3 +111,111 @@ Get Conversation
 
 List Conversation
 ![List](week_5_assets/list_conversion_dynamo_local.png)
+
+## DynamoDB Local Implementation of Conversation
+
+Set `AWS_ENDPOUNT_URL: 'http://dynamodb-local:8000'` in the `dockers-compose.yml`.
+### Backend
+Update the routes and functions in the backend to pipe the messages from the Dynamodb local.
+Change the use of `handle` to use `message-group_uuid`:
+
+- `backend-flask/app.py` `"/api/messages/<string:message_group_uuid>"`
+- `backend-flask/services/messages.py`
+- `backend-flask/services/message_groups.py`
+- Template `backend-flask/db/sql/users/uuid_from_cognito_user_id.sql`
+
+### Frontend
+
+I update below js files on the frontend by removing cookies and adding authentication to the pages
+
+- HomeFeedPage - `frontend-react-js/src/pages/HomeFeedPage.js`
+- MessageGroupPage - `frontend-react-js/src/pages/MessageGroupPage.js`
+- MessageGroupsPage - `frontend-react-js/src/pages/MessageGroupsPage.js`
+- MessageForm - `frontend-react-js/src/components/MessageForm.js`
+- Create `frontend-react-js/src/lib/CheckAuth.js` for authentication reuse.
+
+### New Message
+- Update `create_message.py` `backend-flask/services/create_message.py`, modify below files.
+- Function in the `backend-flask/app.py` (`data_create_message`).
+- Update the content in the `MessageForm.js` file `frontend-react-js/src/components/MessageForm.js`.
+- Create a template `backend-flask/db/sql/users/create_message_users.sql`.
+
+### Message Group
+
+- Update `frontend-react-js/src/components/MessageGroupFeed.js`
+- Create a new .js file `frontend-react-js/src/pages/MessageGroupNewPage.js` and add the route to the `frontend-react-js/src/App.js`.
+- Update the MessageGroupNewItem component `frontend-react-js/src/components/MessageGroupNewItem.js`
+- Create users_short `backend-flask/services/users_short.py`
+- Create a template `backend-flask/db/sql/users/short.sql`
+
+#### Messages tab for the seed data that displays the Conversation
+
+![Messages](week_5_assets/messages.png)
+
+#### New Message
+
+Using the url `https://<frontend_address>/messages/new/<handle>` to create a new message group or start a new conversation with other users.
+
+![New Message](week_5_assets/new_messages.png)
+
+![New_Conversation](week_5_assets/new_conversation_test.png)
+
+
+## DynamoDB Stream with AWS Lambda
+
+- Update `docker-compose.yml` file by commenting out #`AWS_ENDPOINT_URL` and recompose the file.
+- Create DynamoDB table on AWS by running `./bin/ddb/schema-load prod`.
+- Turn on the DynamoDB stream by selecting 'new image' on the AWS DynamoDB cruddur-messages table.
+- Create a VPC endpoint `cruddur-ddb` select `default VPC`, security group and route table for DynamoDB services.
+- Create a new Lambda function on the AWS Lambda console named `cruddur-messaging-stream` attach the VPC, security group and route. Add permission for the IAM role `AWSLambdaInvocation-DynamoDB` and `aws/policies/cruddur-message-stream-policy.json`.
+`cruddur-message-stream-policy.json`
+
+ ```json
+   {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Sid": "VisualEditor0",
+              "Effect": "Allow",
+              "Action": [
+                  "dynamodb:PutItem",
+                  "dynamodb:DeleteItem",
+                  "dynamodb:Query"
+              ],
+              "Resource": [
+                  "arn:aws:dynamodb:us-east-1:289043571302:table/cruddur-messages",
+                  "arn:aws:dynamodb:us-east-1:289043571302:table/cruddur-messages/index/message-group-sk-index"
+              ]
+          }
+      ]
+   }
+```
+- Add a trigger to the AWS DynamoDB table `cruddur-messages`.
+![trigger](week_5_assets/triggers.png)
+
+#### DynamoDB Stream
+![DynamoDB](week_5_assets/dynamodb_stream_messages.png)
+
+#### Cloudwatch Logs
+No error detected.
+![Logs](week_5_assets/Cloudwatch_Logs.png)
+
+## Reference
+
+<ol>
+	
+<li>
+     
+  [Dynamodb Guide](https://www.dynamodbguide.com/what-is-dynamo-db) </li>
+
+
+<li>
+     
+  [Modeling relational data in DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql-B.html) </li>
+
+<li>
+  
+  [NoSQL databases](https://aws.amazon.com/nosql/#:~:text=NoSQL%20databases%20use%20a%20variety,consistency%20restrictions%20of%20other%20databases.) </li>
+
+  
+</ol>
