@@ -44,8 +44,8 @@
         {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "https://api.honeycomb.io"},
         {"name": "AWS_COGNITO_USER_POOLS_ID", "value": "us-east-1_dE3JmjtyC"},
         {"name": "AWS_COGNITO_CLIENT_ID", "value": "2itvsn23donh3jm91dc6ompdp8"},
-        {"name": "FRONTEND_URL", "value": "obi-aws-bootcamp.space"},
-        {"name": "BACKEND_URL", "value": "api.cruddur.com"},
+        {"name": "FRONTEND_URL", "value": "https://obi-aws-bootcamp.space"},
+        {"name": "BACKEND_URL", "value": "https://api.obi-aws-bootcamp.space"},
         {"name": "AWS_DEFAULT_REGION", "value": "us-east-1"}
       ],
       "secrets": [
