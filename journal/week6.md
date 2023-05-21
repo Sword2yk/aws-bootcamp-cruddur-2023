@@ -295,6 +295,42 @@ Configure an internet facing, IPv4 address type application load balancer.<br>
       --subnets subnet-0357b39d5e86fb547 subnet-0d8773266a0c522b4 \
       --security-groups sg-0fd045c29ee62f235
 ```
+##### aws elbv2 describe-load-balancers
+```json
+  {
+      "LoadBalancers": [
+          {
+              "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-1:289043571302:loadbalancer/app/cruddur-alb/491b23f1e2958dee",
+              "DNSName": "cruddur-alb-1342715484.us-east-1.elb.amazonaws.com",
+              "CanonicalHostedZoneId": "Z35SXDOTRQ7X7K",
+              "CreatedTime": "2023-05-17T19:48:16.700000+00:00",
+              "LoadBalancerName": "cruddur-alb",
+              "Scheme": "internet-facing",
+              "VpcId": "vpc-0397e695ab76f9fa0",
+              "State": {
+                  "Code": "active"
+              },
+              "Type": "application",
+              "AvailabilityZones": [
+                  {
+                      "ZoneName": "us-east-1a",
+                      "SubnetId": "subnet-0357b39d5e86fb547",
+                      "LoadBalancerAddresses": []
+                  },
+                  {
+                      "ZoneName": "us-east-1e",
+                      "SubnetId": "subnet-0d8773266a0c522b4",
+                      "LoadBalancerAddresses": []
+                  }
+              ],
+              "SecurityGroups": [
+                  "sg-0fd045c29ee62f235"
+              ],
+              "IpAddressType": "ipv4"
+          }
+      ]
+  }
+```
 ##### Add listeners.
 HTTP:80 and HTTPS:443.<br>
 ![listeners](week-6_7-assets/Listeners_alb.png)
@@ -314,10 +350,206 @@ Create an SSL certificate with AWS Certificate Manager (ACM).
 ![SSL certificate](week-6_7-assets/acm.png)
 
 #### Create record.
-Create a record type A-Routes traffic to an IPv4 address and some AWS resources with a simple routing policy.
+Create a record type A-Routes traffic to an IPv4 address and some AWS resources with a simple routing policy.<br>
 Record name: `obi-aws-bootcamp.space`
 ![obi-aws-bootcamp.space](week-6_7-assets/record-typeA.png)
 Record name: `api.obi-aws-bootcamp.space`
 ![api.obi-aws-bootcamp.space](week-6_7-assets/record-typeA-api.png)
 
+## Fargate, Services, Task Definitions and Register.
+A task is the instantiation of a task definition within a cluster. After you create a task definition for your application within Amazon ECS, you can specify the number of tasks to run on your cluster.<br>
+AWS task definitions for both backend and fronend.<br>
+##### Backend task definition: `backend-flask.json` store in `/aws/task-definitions/`.
+ `backend-flask.json`
+```json
+  {
+  "family": "backend-flask",
+  "executionRoleArn": "arn:aws:iam::289043571302:role/CruddurServiceExecutionRole",
+  "taskRoleArn": "arn:aws:iam::289043571302:role/CruddurTaskRole",
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "memory": "512",
+  "requiresCompatibilities": [ 
+    "FARGATE" 
+  ],
+  "containerDefinitions": [
+    {
+        "name": "xray",
+        "image": "public.ecr.aws/xray/aws-xray-daemon" ,
+        "essential": true,
+        "user": "1337",
+        "portMappings": [
+          {
+            "name": "xray",
+            "containerPort": 2000,
+            "protocol": "udp"
+          }
+        ]
+      },
+    {
+      "name": "backend-flask",
+      "image": "289043571302.dkr.ecr.us-east-1.amazonaws.com/backend-flask",
+      "essential": true,
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "python /backend-flask/bin/health-check"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
+      "portMappings": [
+        {
+          "name": "backend-flask",
+          "containerPort": 4567,
+          "protocol": "tcp", 
+          "appProtocol": "http"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-group": "cruddur",
+            "awslogs-region": "us-east-1",
+            "awslogs-stream-prefix": "backend-flask"
+        }
+      },
+      "environment": [
+        ...............................................
+      ],
+      "secrets": [
+        ...............................................
+      ]
+    }
+  ]
+}
+```
+##### Frontend Task definition  `frontend-react-js.json` store in `/aws/task-definitions/`.
+`frontend-react-js.json`
+```json
+  {
+    "family": "frontend-react-js",
+    "executionRoleArn": "arn:aws:iam::289043571302:role/CruddurServiceExecutionRole",
+    "taskRoleArn": "arn:aws:iam::289043571302:role/CruddurTaskRole",
+    "networkMode": "awsvpc",
+    "cpu": "256",
+    "memory": "512",
+    "requiresCompatibilities": [ 
+      "FARGATE" 
+    ],
+    "containerDefinitions": [
+      {
+        "name": "xray",
+        "image": "public.ecr.aws/xray/aws-xray-daemon" ,
+        "essential": true,
+        "user": "1337",
+        "portMappings": [
+          {
+            "name": "xray",
+            "containerPort": 2000,
+            "protocol": "udp"
+          }
+        ]
+      },
+      {
+        "name": "frontend-react-js",
+        "image": "289043571302.dkr.ecr.us-east-1.amazonaws.com/frontend-react-js",
+        "essential": true,
+        "healthCheck": {
+          "command": [
+            "CMD-SHELL",
+            "curl -f http://localhost:3000 || exit 1"
+          ],
+          "interval": 30,
+          "timeout": 5,
+          "retries": 3
+        },
+        "portMappings": [
+          {
+            "name": "frontend-react-js",
+            "containerPort": 3000,
+            "protocol": "tcp", 
+            "appProtocol": "http"
+          }
+        ],
+  
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+              "awslogs-group": "cruddur",
+              "awslogs-region": "us-east-1",
+              "awslogs-stream-prefix": "frontend-react-js"
+          }
+        }
+      }
+    ]
+  }
+```
+##### Register
+`backend-flask.json` task registeration.
 
+```aws
+  ./bin/backend/register
+```
+
+`frontend-react-js.json` task registeration.
+
+```aws
+  ./bin/frontend/register
+```
+
+##### AWS Services.
+In this [Commit](b0fdadcd529b45c789e208807a553ee7d9919110), is the json file creating the services for the Fargate that will run the defined taskes.<br>
+Run below aws commands to create both backend and frontend Amazon Elastic Container Service under the cruddur clusters.<br>
+
+##### AWS ECS Backend Services.
+```aws
+    aws ecs create-service --cli-input-json file://aws/json/service-backend-flask.json
+```
+##### AWS ECS Frontend Services.
+```aws
+    aws ecs create-service --cli-input-json file://aws/json/service-frontend-react-js.json
+```
+##### Health Check.
+`api.obi-aws-bootcamp.space/api/health-check`
+![health-check](week-6_7-assets/api_crudder_com_api_health-check.png)
+
+##### Domain check.
+`obi-aws-bootcamp.space`
+![Domain](week-6_7-assets/obi_frontend.png)
+
+##### After login.
+![Login](week-6_7-assets/obi-aws-bootcamp.png)
+
+##### Messages.
+![Message](week-6_7-assets/message_bayco.png)
+
+##### New Message.
+![new](week-6_7-assets/new_message.png)
+
+My domain `obi-aws-bootcamp.space` is temporarily down (503 Service Temporarily Unavailable) because of spend concern to work within my AWS budget limit.
+
+## Reference
+
+<ol>
+	
+<li>
+     
+  [Amazon ECS clusters](https://docs.aws.amazon.com/AmazonECS/latest/userguide/clusters.html) </li>
+
+
+<li>
+     
+  [Elastic Container Service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html) </li>
+
+<li>
+  
+  [AWS Lambda Python](https://hub.docker.com/r/amazon/aws-lambda-python) </li>
+
+<li>
+  
+  [AWS Fargate](https://docs.aws.amazon.com/AmazonECS/latest/userguide/what-is-fargate.html) </li>
+  
+</ol>
