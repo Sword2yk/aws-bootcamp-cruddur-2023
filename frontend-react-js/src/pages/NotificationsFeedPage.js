@@ -1,8 +1,8 @@
 import './NotificationsFeedPage.css';
 import React from "react";
 
-import DesktopNavigation from '../components/DesktopNavigation';
-import DesktopSidebar from '../components/DesktopSidebar';
+import DesktopNavigation  from '../components/DesktopNavigation';
+import DesktopSidebar     from '../components/DesktopSidebar';
 import ActivityFeed from '../components/ActivityFeed';
 import ActivityForm from '../components/ActivityForm';
 import ReplyForm from '../components/ReplyForm';
@@ -55,33 +55,34 @@ export default function NotificationsFeedPage() {
     checkAuth();
   }, [])
 
-  return (<article>
-    <DesktopNavigation user={user} active={'notifications'} setPopped={setPopped} />
-    <div className='content'>
-      <ActivityForm  
-        popped={popped}
-        setPopped={setPopped} 
-        setActivities={setActivities} 
-      />
-      <ReplyForm 
-        activity={replyActivity} 
-        popped={poppedReply} 
-        setPopped={setPoppedReply} 
-        setActivities={setActivities} 
-        activities={activities} 
-      />
-      <div className='activity_feed'>
-        <div className='activity_feed_heading'>
-          <div className='title'>Notifications</div>
-        </div>
-        <ActivityFeed 
-          setReplyActivity={setReplyActivity} 
+  return (
+    <article>
+      <DesktopNavigation user={user} active={'notifications'} setPopped={setPopped} />
+      <div className='content'>
+        <ActivityForm  
+          popped={popped}
+          setPopped={setPopped} 
+          setActivities={setActivities} 
+        />
+        <ReplyForm 
+          activity={replyActivity} 
+          popped={poppedReply} 
           setPopped={setPoppedReply} 
+          setActivities={setActivities} 
           activities={activities} 
         />
+        <div className='activity_feed'>
+          <div className='activity_feed_heading'>
+            <div className='title'>Notifications</div>
+          </div>
+          <ActivityFeed 
+            setReplyActivity={setReplyActivity} 
+            setPopped={setPoppedReply} 
+            activities={activities} 
+          />
+        </div>
       </div>
-    </div>
-    <DesktopSidebar user={user} />
-  </article>
+      <DesktopSidebar user={user} />
+    </article>
   );
 }
