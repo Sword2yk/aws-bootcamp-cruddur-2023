@@ -36,3 +36,17 @@ Using AWS CDK CLI for global installation.
   npm install aws-cdk -g
 ```
 
+Create a new file in `bin` directory for docker compose up.<br>
+Scripts:<br>
+`./bin/bootstrap` to generate backend & frontend environment variables. [Bootstrap code](bin/booststrap)<br>
+`./bin/prepare`. for db and ddb preparation. [db/ddb code](bin/prepare)<br>
+Update the env vars with my domain name.`obi-aws-bootcamp.space` and create an S3 bucket `assets.obi-aws-bootcamp.space`. In this bucket create another a folder name `banners`, and upload a banner.jpg into the `banners` folder.<br>
+
+```bash
+  export UPLOADS_BUCKET_NAME="obi-cruddur-uploaded-avatars"
+  gp env UPLOADS_BUCKET_NAME="obi-cruddur-uploaded-avatars"
+  
+  export DOMAIN_NAME="obi-aws-bootcamp.space"
+  gp env DOMAIN_NAME="obi-aws-bootcamp.space"
+```
+
