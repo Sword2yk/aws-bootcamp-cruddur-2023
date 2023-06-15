@@ -30,10 +30,16 @@ Create a new directory for CDK pipeline in a new top level tree.
 CDK(Cloud Development Kit) is used to create S3 bukets, SNS topics and lambda functions.
 
 ## Install CDK globally
-Using AWS CDK CLI for global installation.
+Using AWS CDK CLI for global installation.<br>
+
 
 ```cli
+  cd thumbing-serverless-cdk
+  
   npm install aws-cdk -g
+  cdk init app --language typescript
+  npm install dotenv
+  
 ```
 
 Create a new file in `bin` directory for docker compose up.<br>
@@ -49,4 +55,41 @@ Update the env vars with my domain name.`obi-aws-bootcamp.space` and create an S
   export DOMAIN_NAME="obi-aws-bootcamp.space"
   gp env DOMAIN_NAME="obi-aws-bootcamp.space"
 ```
+Update `.env.example` ([env.example](thumbing-serverless-cdk/.env.example)) with UPLOADS_BUCKET_NAME, ASSETS_BUCKET_NAME, S3 output folder and SNS topic.
 
+## Create AWS CloudFormation Stack
+- Run `cdk synth` to generate cdk </li>
+- Run `cdk bootstrap` "aws://${AWS_ACCOUNT_ID}/${AWS_DEFAULT_REGION}"</li>
+- Run `cdk deploy` to create on the AWS CloudFormation</li>
+    
+#### CloudFormation Stacks
+ThumbingServerlessCdkCdkStack & CDKToolkit Stacks.<br>
+
+![CloudFormation Stacks]()
+
+### Amazon S3 bucket
+
+S3 Bucket: `obi-cruddur-uploaded-avatars` and `obi-cruddur-uploaded-avatars`
+![]()
+
+- Run `./bin/avatar/upload`, to upload `data.jpg` into the Amazon S3 bucket `obi-cruddur-uploaded-avatars`. This triggers the `Lambda` function to process the image and saved into the `avatars` folder.<br>
+
+Avatars/processed.
+![Data]()
+
+## CloudFront Setup
+Generate a certificate in `us-east-1` zone for `obi-aws-bootcamp.space` domain, from the Route 53 record.
+
+CloudFront Distribution:
+
+- Select the Origin domain to point the S3 bucket `assets.<DOMAIN_NAME>`
+- Choose the Origin access control settings (recommended) and create a control setting from the drop down.
+- Viewer protocol select Redirect HTTP to HTTPS.
+- The response headers policy select CachingOptimized, CORS-CustomOrigin as the optional Origin request policy, and SimpleCORS.
+- Set `assets.<DOMAIN_NAME>` as Alternate domain name (CNAME).
+- Select the AWS Certificate Manager (ACM) for the custom SSL certificate.
+
+Attached [S3-upload-avatar-presigned-url-policy](aws/policies/s3-upload-avatar-presigned-url-policy.json) to the S3 bucket.
+
+### Route 53
+- Create a record `assets.obi-aws-bootcamp.space`
