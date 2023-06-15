@@ -85,7 +85,7 @@ CloudFront Distribution:
 - Select the Origin domain to point the S3 bucket `assets.<DOMAIN_NAME>`
 - Choose the Origin access control settings (recommended) and create a control setting from the drop down.
 - Viewer protocol select Redirect HTTP to HTTPS.
-- The response headers policy select CachingOptimized, CORS-CustomOrigin as the optional Origin request policy, and SimpleCORS.
+- Response headers policy select CachingOptimized, CORS-CustomOrigin as the optional Origin request policy, and SimpleCORS.
 - Set `assets.<DOMAIN_NAME>` as Alternate domain name (CNAME).
 - Select the AWS Certificate Manager (ACM) for the custom SSL certificate.
 
@@ -93,3 +93,7 @@ Attached [S3-upload-avatar-presigned-url-policy](aws/policies/s3-upload-avatar-p
 
 ### Route 53
 - Create a record `assets.obi-aws-bootcamp.space`
+- Record type `A-Routes traffic to an IPv4 address and AWS resourese`
+- Alias - `ON`
+- Route traffic to - CloudFront distribution (`d3ujpi01dy9k5q.cloudfront.net`)
+- Routing policy - `Simple routing`.
