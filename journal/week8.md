@@ -97,3 +97,54 @@ Attached [S3-upload-avatar-presigned-url-policy](aws/policies/s3-upload-avatar-p
 - Alias - `ON`
 - Route traffic to - CloudFront distribution (`d3ujpi01dy9k5q.cloudfront.net`)
 - Routing policy - `Simple routing`.
+
+Run `./bin/avatar/upload` to upload the avatar (profile) in the avatars S3 bucket. This case be access via the CloudFront.
+@ https://assets.obi-aws-bootcamp.space/avatars/data.jpg.
+
+Add Invalidation details to edge chaches old avatar. Invalidation will allow CloudFront to always serve the latest avatar uploaded.
+![Invalidation]()
+
+## Backend for Profile Page
+Backend files updated for the profile page.<br>
+- `backend-flask/app.py`.
+- `backend-flask/services/user_activities.py`.
+- `backend-flask/services/update_profile.py`.
+- `backend-flask/db/sql/users/update.sql`.
+- `backend-flask/db/sql/users/show.sql`.
+<br>
+
+[Backend file path](backend-flask)
+
+## Frontend for Profile Page
+Frontend files updated or created for the profile page.<br>
+- `frontend-react-js/src/App.js`.
+- `frontend-react-js/src/lib/CheckAuth.js`.
+- `frontend-react-js/jsconfig.json`.
+- `frontend-react-js/src/pages/HomeFeedPage.js`.
+- `frontend-react-js/src/pages/NotificationsFeedPage.js`.
+- `frontend-react-js/src/pages/UserFeedPage.js`.
+- `frontend-react-js/src/components/ActivityFeed.js`.
+- `frontend-react-js/src/components/CrudButton.js`.
+- `frontend-react-js/src/components/DesktopNavigation.js`.
+- `frontend-react-js/src/components/EditProfileButton.css`.
+- `frontend-react-js/src/components/EditProfileButton.js`.
+- `frontend-react-js/src/components/Popup.css`.
+- `frontend-react-js/src/components/ProfileAvatar.css`.
+- `frontend-react-js/src/components/ProfileAvatar.js`.
+- `frontend-react-js/src/components/ProfileForm.css`.
+- `frontend-react-js/src/components/ProfileForm.js`.
+- `frontend-react-js/src/components/ProfileHeading.css`.
+- `frontend-react-js/src/components/ProfileHeading.js`.
+- `frontend-react-js/src/components/ProfileInfo.js`.
+- `frontend-react-js/src/components/ReplyForm.css`.
+  <br>
+  
+[Frontend file path](frontend-react-js)
+
+## Database Migration
+Add `bio` column in the postgres database to migrate the database. Run `./bin/generate/migration` to `add_bio_column` and a script `16855375451814039_add_bio_column.py` [add_bio](backend-flask/db/migrations/16855375451814039_add_bio_column.py) (python script) will be generated. Update `./db/schema.sql` and `.backend-flask/lib/db.py` with verbose. Create a scripts `./bin/db/migrate` and `./bin/db/rollback`. Run `./bin/db/migrate/` to add the column `bio` to `users` table in the db.
+
+## Image Processing
+Create an API endpoint, to invoke a presigned URL `https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com`, which gives an authorization access to the S3 bucket.<br>
+![API]()
+This action will call the API `https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/avatars/key_upload` do the upload, where the `/avatars/key_upload` resource is manipulated by the `POST` method. Create a Lambda function named `CruddurAvatarUpload` to decode the URL and the request. Implement authorization with another Lambda function named `CruddurApiGatewayLambdaAuthorizer`, which is important to control the data that is allowed to be transmitted from our gitpod workspace using the APIs.
