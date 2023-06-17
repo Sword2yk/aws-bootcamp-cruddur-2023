@@ -59,23 +59,25 @@ Update `.env.example` ([env.example](thumbing-serverless-cdk/.env.example)) with
 
 ## Create AWS CloudFormation Stack
 - Run `cdk synth` to generate cdk </li>
-- Run `cdk bootstrap` "aws://${AWS_ACCOUNT_ID}/${AWS_DEFAULT_REGION}"</li>
-- Run `cdk deploy` to create on the AWS CloudFormation</li>
-    
+- Run `cdk bootstrap` "aws://${AWS_ACCOUNT_ID}/${AWS_DEFAULT_REGION}"
+- Run `cdk deploy` to create on the AWS CloudFormation
+
+![cdk deploy](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/cdk%20deploy.png)
+
 #### CloudFormation Stacks
 ThumbingServerlessCdkCdkStack & CDKToolkit Stacks.<br>
 
-![CloudFormation Stacks]()
+![CloudFormation Stacks](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/CloudFormation.png)
 
 ### Amazon S3 bucket
 
 S3 Bucket: `obi-cruddur-uploaded-avatars` and `obi-cruddur-uploaded-avatars`
-![]()
+![S3](journal/week_8_assets/Bucket S3.png)
 
 - Run `./bin/avatar/upload`, to upload `data.jpg` into the Amazon S3 bucket `obi-cruddur-uploaded-avatars`. This triggers the `Lambda` function to process the image and saved into the `avatars` folder.<br>
 
 Avatars/processed.
-![Data]()
+![Data](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/avatars_data.jpg)
 
 ## CloudFront Setup
 Generate a certificate in `us-east-1` zone for `obi-aws-bootcamp.space` domain, from the Route 53 record.
@@ -89,8 +91,8 @@ CloudFront Distribution:
 - Set `assets.<DOMAIN_NAME>` as Alternate domain name (CNAME).
 - Select the AWS Certificate Manager (ACM) for the custom SSL certificate.
 
-Attached [S3-upload-avatar-presigned-url-policy](aws/policies/s3-upload-avatar-presigned-url-policy.json) to the S3 bucket.
-
+Attached [S3-upload-avatar-presigned-url-policy](aws/policies/s3-upload-avatar-presigned-url-policy.json) to the S3 bucket.<br>
+![Distribution](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/CloudFront.png)
 ### Route 53
 - Create a record `assets.obi-aws-bootcamp.space`
 - Record type `A-Routes traffic to an IPv4 address and AWS resourese`
@@ -102,7 +104,7 @@ Run `./bin/avatar/upload` to upload the avatar (profile) in the avatars S3 bucke
 @ https://assets.obi-aws-bootcamp.space/avatars/data.jpg.
 
 Add Invalidation details to edge chaches old avatar. Invalidation will allow CloudFront to always serve the latest avatar uploaded.
-![Invalidation]()
+![Invalidation](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/Invalidation.png)
 
 ## Backend for Profile Page
 Backend files updated for the profile page.<br>
@@ -146,5 +148,85 @@ Add `bio` column in the postgres database to migrate the database. Run `./bin/ge
 
 ## Image Processing
 Create an API endpoint, to invoke a presigned URL `https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com`, which gives an authorization access to the S3 bucket.<br>
-![API]()
+![API](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/API.png)
 This action will call the API `https://<API_ID>.execute-api.<AWS_REGION>.amazonaws.com/avatars/key_upload` do the upload, where the `/avatars/key_upload` resource is manipulated by the `POST` method. Create a Lambda function named `CruddurAvatarUpload` to decode the URL and the request. Implement authorization with another Lambda function named `CruddurApiGatewayLambdaAuthorizer`, which is important to control the data that is allowed to be transmitted from our gitpod workspace using the APIs.
+
+- Create a basic ruby function `function.rb, in `aws/lambdas/cruddur-upload-avatar/` run `bundle init` in the file directory.
+- Edit the `Gemfile` and add some packages to install `OX`, `aws-sdk-s3` and `jwt`.
+- Run `bundle install` and `bundle exec ruby function.rb`. [Ruby function](aws/lambdas/cruddur-upload-avatar/function.rb).
+- Ruby Lambda function used `CruddurAvatarUpload`.
+- Create the lambda authorizer in `aws/lambdas/lambda-authorizer/`, add `index.js` and run `npm install aws-jwt-verify --save`.
+- Right on the files in the directory `aws/lambdas/lambda-authorizer/` and download the files `index.js`, `package.json` and `package-lock.json`. Zip the files into zip file `lambda_authorizer.zip`.
+
+AWS Lambda Functions:
+1. Lambda Function `CruddurAvatarUpload`.<br>
+
+   ![CruddurAvatarUpload](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/lambda_function_handler.png)
+    - Copy the source code from the file path `aws/lambdas/cruddur-upload-avatar/` and update the `Access-Control-Allow-Origin` with the   gitpod frontend and backend URL.
+    - Rename the `function.rb` to `function.handler`.
+    - Add the environment variable `UPLOADS_BUCKET_NAME`.
+    - Attach the new policy role below to `CruddurAvatarUpload` lambda function.
+   
+    ```json
+        {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "VisualEditor0",
+                "Effect": "Allow",
+                "Action": "s3:PutObject",
+                "Resource": "arn:aws:s3:::obi-cruddur-uploaded-avatars/*"
+            }
+          ]
+        }
+        
+    ```
+
+
+2. Lambda function Authorizer `CruddurApiGatewayLambdaAuthorizer` <br>
+
+    ![CruddurApiGatewayLambdaAuthorizer](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/lambda_authorizer_api.png)
+    - Create a Lambda function `CruddurApiGatewayLambdaAuthorizer`.
+    - Upload the zip file `lambda_authorizer.zip`.
+
+Amazon S3:
+ -  Update the permissions of `obi-cruddur-uploaded-avatars` bucket by editing the Cross-origin resource sharing (CORS) and add the json code below.
+
+ ```json
+      [
+        {
+            "AllowedHeaders": [
+            "*"
+            ],
+            "AllowedMethods": [
+                "PUT"
+            ],
+            "AllowedOrigins": [
+                "https://*.gitpod.io"
+            ],
+            "ExposeHeaders": [
+                "x-amz-server-side-encryption",
+                "x-amz-request-id",
+                "x-amz-id-2"
+            ],
+            "MaxAgeSeconds": 3000
+        }
+       ]
+```
+
+Amazon API Gateway:
+- Create HTTP API gateway `api.obi-aws-bootcamp.space`.
+- Add two Routes.
+    - `POST: /avatar/key_upload` with authorizer `CruddurJWTAuthorizer` which invoke Lambda `CruddurApiGatewayLambdaAuthorizer`, and with integration `CruddurAvatarUpload`.<br>
+      ![Route POST](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/Route_POST.png)
+    - `OPTIONS: /{proxy+}` without authorizer, but with integration `CruddurAvatarUpload`.<br>
+      ![Route OPTIONS](https://github.com/Sword2yk/aws-bootcamp-cruddur-2023/blob/main/journal/week_8_assets/Route_OPTIONS.png)
+
+## Environment Variables Checks
+
+- function.rb in `CruddurAvatarUpload`: set `Access-Control-Allow-Origin` as your own frontend URL and backend URL.
+- `index.js` in `CruddurApiGatewayLambdaAuthorizer`: ensure that token can be correctly extracted from the authorization header.
+- Environment variables in the above two Lambdas were added.
+  - `erb/frontend-react-js.env.erb`: `REACT_APP_API_GATEWAY_ENDPOINT_URL` equals to the Invoke URL shown in the API Gateway.
+  - `frontend-react-js/src/components/ProfileForm.js`: `gateway_url` and `backend_url` are correctly set.
+- Inconsistency checks in some scripts, e.g., `cognito_user_uuid` vs. `cognito_user_id`.
