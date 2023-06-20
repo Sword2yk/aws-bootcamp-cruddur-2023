@@ -230,3 +230,11 @@ Amazon API Gateway:
   - `erb/frontend-react-js.env.erb`: `REACT_APP_API_GATEWAY_ENDPOINT_URL` equals to the Invoke URL shown in the API Gateway.
   - `frontend-react-js/src/components/ProfileForm.js`: `gateway_url` and `backend_url` are correctly set.
 - Inconsistency checks in some scripts, e.g., `cognito_user_uuid` vs. `cognito_user_id`.
+
+## Reference
+
+- [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html)
+- [Amazon S3 Construct Library](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_s3-readme.html)
+- [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
+- [Amazon CloudFront](https://www.amazonaws.cn/en/cloudfront/)
+- [Amazon API Gateway](https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html)
